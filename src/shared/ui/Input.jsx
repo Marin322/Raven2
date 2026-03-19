@@ -2,11 +2,11 @@ export const Input = ({
   label,
   error,
   type = "text",
-  classname = "",
+  className = "",
   ...props
 }) => {
   return (
-    <div className={`flex flex-col gap-1.5 w-full ${classname}`}>
+    <div className={`flex flex-col gap-1.5 w-full ${className}`}>
       {label && (
         <label className="text-[18px] font-medium text-second-text ml-1">
           {label}

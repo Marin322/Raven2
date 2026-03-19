@@ -1,1 +1,2 @@
-export {Inpute} from './ui/Input';
+export {Input} from './ui/Input';
+export {Button} from './ui/Button';
