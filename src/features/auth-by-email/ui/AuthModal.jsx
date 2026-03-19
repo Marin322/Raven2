@@ -60,6 +60,7 @@ export const AuthModal = () => {
               placeholder="Введите ваш пароль ещё раз"
               className="mt-5"
             />
+            <Button children="Зарегистрироваться" variant="primary" className="mt-5"/>
           </div>
         )}
       </div>
