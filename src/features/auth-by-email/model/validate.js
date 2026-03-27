@@ -2,11 +2,9 @@ export const validate = (values, isAuth) => {
     const errors = {};
     const emailRegex = /^\S+@\S+\.\S+$/;
 
-    if(!values.email) {
-        errors.email = "Введите почту";
-    } else if (!emailRegex.test(values.email)) {
-        errors.email = "Неверный формат почты";
-    };
+    if(!values.login) {
+        errors.login = "Логин не может быть пустым";   
+    }
 
     if(!values.password) {
         errors.password = "Введите пароль";
@@ -15,12 +13,15 @@ export const validate = (values, isAuth) => {
     };
 
     if(!isAuth) {
+        if (!values.companyName) {
+            errors.companyName = "Название компании не может быть пустым";
+        }
+        if (!values.fullName) {
+            errors.fullName = "Введите ваше полное ФИО";
+        }
         if (!values.username) {
-            errors.username = "Введите имя";
-        };
-        if (values.password !== values.confirmPassword) {
-            errors.confirmPassword = "Пароли не совпадают";
-        };
+            errors.username = "Введите ваш новый логин";
+        }
     };
 
     return errors;

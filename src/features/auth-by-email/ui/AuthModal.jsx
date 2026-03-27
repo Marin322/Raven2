@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LoginForm } from "./LoginForm";
-import { RegisterForm } from "./RegisterForm";
+import { RegisterCompany } from "./RegisterCompany";
 export const AuthModal = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(true);
   return (
@@ -24,7 +24,7 @@ export const AuthModal = () => {
             Регистрация
           </button>
         </div>
-        {isAuthOpen == true ? <LoginForm /> : <RegisterForm />}
+        {isAuthOpen == true ? <LoginForm /> : <RegisterCompany />}
       </div>
     </div>
   );

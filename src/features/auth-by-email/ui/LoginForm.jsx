@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input, Button } from "../../../shared";
 import { validate } from "../model/validate";
 export const LoginForm = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ login: "", password: "" });
   const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
@@ -23,13 +23,13 @@ export const LoginForm = () => {
   return (
     <div>
       <Input
-        name="email"
-        label="Эл. Почта"
+        name="login"
+        label="Логин"
         type="text"
-        value={formData.email}
+        value={formData.login}
         onChange={handleChange}
         placeholder="Введите вашу эл. почту"
-        error={errors?.email}
+        error={errors?.login}
       />
       <Input
         name="password"
