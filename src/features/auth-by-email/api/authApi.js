@@ -2,15 +2,15 @@ import {apiFetch} from '../../../shared'
 
 /**
  * Функция для авторизации
- * @param {string} email - электронная почта пользователя
+ * @param {string} username - юзернейм пользователя
  * @param {string} password - пароль пользователя
  * @returns {Promise<any>} результат запроса или ошибка
- * @example loginByEmail('userTest@mail.ru', '123456_+')
+ * @example loginByPassword('superUser2004', '123456_+')
  */
-export const loginByEmail = (email, password) => {
+export const loginByPassword = (username, password) => {
     return apiFetch('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({email, password})
+        body: JSON.stringify({username, password})
     });
 };
 
@@ -18,7 +18,7 @@ export const loginByEmail = (email, password) => {
  * Функция для регистрации новой компании
  * @param {Object} userData - Данные пользователя
  * @returns {Promise<any>} результат запроса или ошибка
- * @example loginByEmail('userTest@mail.ru', '123456_+')
+ * @example registerCompany(userData)
  */
 export const registerCompany = (userData) => {
     return apiFetch('/auth/register-company', {

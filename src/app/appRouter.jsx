@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import { AuthPage } from "../pages/auth/";
 import { RootLayout } from "../app/layouts";
 import { MainPage } from "../pages/main/";
+import { ProtectedRoute } from "./providers/ProtectedRoute";
+import { GuestRoute } from "./providers/GuestRoute";
 
 export const appRouter = createBrowserRouter([
   {
@@ -11,12 +13,20 @@ export const appRouter = createBrowserRouter([
     children: [
       {
         path: "/auth",
-        element: <AuthPage />,
+        element: (
+          <GuestRoute>
+            <AuthPage />
+          </GuestRoute>
+        ),
       },
       {
         path: "/",
-        element: <MainPage/>
-      }
+        element: (
+          <ProtectedRoute>
+            <MainPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);

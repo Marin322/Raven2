@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input, Button } from "../../../shared";
 import { validate } from "../model/validate";
+import { registerCompany } from "../api/authApi";
 
 export const RegisterCompany = () => {
   const [formData, setFormData] = useState({
@@ -10,11 +11,28 @@ export const RegisterCompany = () => {
     password: "",
   });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(formData, false);
     setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+    setIsLoading(true);
+    try {
+      const registerData = {
+        companyName: formData.companyName,
+        fullName: formData.fullName,
+        username: formData.username,
+        password: formData.password,
+      };
+      const data = await registerCompany(registerData);
+      console.log("Компания создана!", data);
+    } catch (err) {
+      console.log("okak");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -70,7 +88,9 @@ export const RegisterCompany = () => {
         variant="primary"
         className="mt-5"
         onClick={handleSubmit}
-      />
+      >
+        {isLoading ? "Регистрируем..." : "Зарегистрироваться"}
+      </Button>
     </div>
   );
 };

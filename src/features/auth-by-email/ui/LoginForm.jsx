@@ -1,25 +1,37 @@
 import { useState } from "react";
 import { Input, Button } from "../../../shared";
 import { validate } from "../model/validate";
-import { loginByEmail } from "../api/authApi";
+import { loginByPassword } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
+
 export const LoginForm = () => {
-  const [formData, setFormData] = useState({ login: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(formData, true);
     setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+    setIsLoading(true);
     try {
-      const data = await loginByEmail(formData.email, formData.password);
-      console.log("Успешный вход!", data);
+      const data = await loginByPassword(formData.username, formData.password);
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("isAdmin", data.isGlobalAdmin);
       localStorage.setItem("companyId", data.companyId);
+
+      navigate("/", {replace: true});
+      
     } catch (err) {
-      console.log("okak");
+      setErrors((prev) => ({...prev, server: err.message}));
     }
+    finally {
+      setIsLoading(false);
+    };
   };
 
   const handleChange = (e) => {
@@ -30,13 +42,13 @@ export const LoginForm = () => {
   return (
     <div>
       <Input
-        name="login"
+        name="username"
         label="Логин"
         type="text"
-        value={formData.login}
+        value={formData.username}
         onChange={handleChange}
         placeholder="Введите ваш новый логин"
-        error={errors?.login}
+        error={errors?.username}
       />
       <Input
         name="password"
@@ -48,12 +60,18 @@ export const LoginForm = () => {
         className="mt-5"
         error={errors?.password}
       />
+      {errors.server && (
+        <span className="text-red-500 text-sm text-center">{errors.server}</span>
+      )}
       <Button
         children="Войти"
         variant="primary"
         className="mt-5"
         onClick={handleSubmit}
-      />
+        disabled={isLoading}
+      >
+        {isLoading ? "Входим..." : "Войти"}
+      </Button>
     </div>
   );
 };
