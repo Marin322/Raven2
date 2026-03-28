@@ -1,18 +1,25 @@
 import { useState } from "react";
 import { Input, Button } from "../../../shared";
 import { validate } from "../model/validate";
+import { loginByEmail } from "../api/authApi";
 export const LoginForm = () => {
   const [formData, setFormData] = useState({ login: "", password: "" });
   const [errors, setErrors] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(formData, true);
     setErrors(validationErrors);
-
-    // if (Object.keys(validationErrors).length === 0) {
-
-    // }
+    try {
+      const data = await loginByEmail(formData.email, formData.password);
+      console.log("Успешный вход!", data);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("isAdmin", data.isGlobalAdmin);
+      localStorage.setItem("companyId", data.companyId);
+    } catch (err) {
+      console.log("okak");
+    }
   };
 
   const handleChange = (e) => {
@@ -28,7 +35,7 @@ export const LoginForm = () => {
         type="text"
         value={formData.login}
         onChange={handleChange}
-        placeholder="Введите вашу эл. почту"
+        placeholder="Введите ваш новый логин"
         error={errors?.login}
       />
       <Input
