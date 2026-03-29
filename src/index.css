@@ -13,6 +13,9 @@
 
   --color-main-text: #000000;
   --color-second-text: #928d85;
+  --color-active-text: #a8b5ff;
+
+  --color-listItem-active-bg: #e9e9ff;
 }
 
 [data-theme='dark'] {
