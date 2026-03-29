@@ -1,21 +1,24 @@
-import { useState } from "react";
-import { apiFetch, Button } from "../../../shared"
+import { useEffect, useState } from "react";
+import { UserListItem } from "./UserListItem";
+import { useUserStore } from "../../../entitites/user/model/useUserStore";
 export const UserList = () => {
-    const [users, setUsers] = useState({});
-    const loadUsers = async () => {
-        try {
-            const users = await apiFetch('/search/users');
-            console.log(users);
-        }
-        catch(err) {
-            throw new Error(err);
-        }
-    }
+  const {users, isLoading, fetchUsers} = useUserStore();
 
-    setUsers(loadUsers());
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
-    return (
-        <div>
-        </div>
-    )
-}
+  if (isLoading) return <div>Загрузка...</div>;
+
+  return (
+    <div className="flex flex-col w-full max-w-2xl">
+      {users.length > 0 ? (
+        users.map((user) => (
+          <UserListItem key={user.id} fullName={user.fullName} username={user.username} departamentName={user.departmentName}/>
+        ))
+      ) : (
+        <p className="text-second-text">Пользователей пока нет</p>
+      )}
+    </div>
+  );
+};

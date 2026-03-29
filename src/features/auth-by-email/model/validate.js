@@ -1,25 +1,15 @@
+import { isRequired, validateEmailFormat, validatePasswordLength } from "../../../shared";
 export const validate = (values, isAuth) => {
     const errors = {};
-    const emailRegex = /^\S+@\S+\.\S+$/;
 
-    if (!values.username) {
-        errors.username = "Логин не может быть пустым";
-    }
+    errors.username = isRequired(values.username) || "";
+    errors.password = isRequired(values.password) || validatePasswordLength(6)(values.password);
 
-    if(!values.password) {
-        errors.password = "Введите пароль";
-    } else if (values.password.length < 6) {
-        errors.password = "Минимум 6 символов";
+    if (!isAuth) {
+        errors.companyName = isRequired(values.companyName) || "";
+        errors.fullName = isRequired(values.fullName) || "";
     };
 
-    if(!isAuth) {
-        if (!values.companyName) {
-            errors.companyName = "Название компании не может быть пустым";
-        }
-        if (!values.fullName) {
-            errors.fullName = "ФИО не может быть пустым";
-        }
-    };
-
+    Object.keys(errors).forEach(key => !errors[key] && delete errors[key]);
     return errors;
 };
