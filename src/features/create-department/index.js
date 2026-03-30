@@ -1,0 +1,1 @@
+export {CreateDepartment} from './ui/CreateDepartment';

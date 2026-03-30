@@ -2,23 +2,32 @@ import { useState } from "react";
 import { AdminSideBar } from "../../../widgets/admin-sidebar";
 import { UserList } from "../../../widgets/user-list";
 import { CreateUser } from "../../../features/create-user";
+import { CreateDepartment } from "../../../features/create-department";
 export const AdminPage = () => {
-  const [activeTab, setActiveTab] = useState("list");
+  const [activeTab, setActiveTab] = useState("userList");
 
   const renderContet = () => {
     switch (activeTab) {
-      case "list":
+      case "userList":
         return (
           <div>
             <UserList />
           </div>
         );
-      case "create":
+      case "userCreate":
         return (
           <div>
             <CreateUser />
           </div>
         );
+      case "userEdit":
+        return (
+          <div></div>
+        );
+      case "departmentCreate":
+        return (
+          <div><CreateDepartment/></div>
+        )
     }
   };
   return (
