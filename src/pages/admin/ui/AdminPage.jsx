@@ -5,6 +5,12 @@ import { CreateUser } from "../../../features/create-user";
 import { CreateDepartment } from "../../../features/create-department";
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("userList");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setIsMenuOpen(false)
+  }
 
   const renderContet = () => {
     switch (activeTab) {
@@ -31,10 +37,41 @@ export const AdminPage = () => {
     }
   };
   return (
-    <div className="w-full h-screen overflow-hidden bg-main-bg flex">
-      <AdminSideBar activeTab={activeTab} onTabChanged={setActiveTab} />
-      <div className="overflow-none flex justify-center flex-1 h-full p-5">
-        <div className="w-full max-w-125">{renderContet()}</div>
+    <div className="w-full h-screen overflow-hidden bg-main-bg flex relative">
+      
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden" 
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+
+      <AdminSideBar 
+        activeTab={activeTab} 
+        onTabChanged={handleTabChange} 
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
+
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        
+        <header className="md:hidden flex items-center p-4 bg-secondary-bg border-b border-border-bg">
+          <button 
+            onClick={() => setIsMenuOpen(true)}
+            className="text-main-text text-2xl"
+          >
+            ☰
+          </button>
+          <h1 className="ml-4 text-main-text font-medium">
+            Панель управления
+          </h1>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-5 flex justify-center">
+          <div className="w-full max-w-150">
+            {renderContet()}
+          </div>
+        </div>
       </div>
     </div>
   );

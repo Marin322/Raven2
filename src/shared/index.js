@@ -4,3 +4,4 @@ export {apiFetch} from './api/api';
 export {SideBarBase} from './ui/SideBarBase';
 export {ListItem} from './ui/ListItem';
 export {isRequired, validatePasswordLength, validateEmailFormat} from './lib/validation/rules';
+export {SideBarSection} from './ui/SideBarSection';

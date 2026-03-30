@@ -1,5 +1,9 @@
+import { useState } from "react"
+import { CreateDepartmentForm } from "./CreateDepartmentForm";
 export const CreateDepartment = () => {
     return (
-        <div>sd</div>
+        <div>
+            <CreateDepartmentForm/>
+        </div>
     )
 }
