@@ -3,6 +3,7 @@ import { AdminSideBar } from "../../../widgets/admin-sidebar";
 import { UserList } from "../../../widgets/user-list";
 import { CreateUser } from "../../../features/create-user";
 import { CreateDepartment } from "../../../features/create-department";
+import { EditUser } from "../../../features/edit-user";
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("userList");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,7 +18,7 @@ export const AdminPage = () => {
       case "userList":
         return (
           <div>
-            <UserList />
+            <UserList onTabChanged={handleTabChange} />
           </div>
         );
       case "userCreate":
@@ -28,7 +29,9 @@ export const AdminPage = () => {
         );
       case "userEdit":
         return (
-          <div></div>
+          <div>
+            <EditUser/>
+          </div>
         );
       case "departmentCreate":
         return (

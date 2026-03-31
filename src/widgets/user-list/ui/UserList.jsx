@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { UserListItem } from "./UserListItem";
 import { useUserStore } from "../../../entitites/user/model/useUserStore";
 import { Input } from "../../../shared";
-export const UserList = () => {
+export const UserList = ({onTabChanged}) => {
   const { users, isLoading, fetchUsers } = useUserStore();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,6 +15,10 @@ export const UserList = () => {
     const name = user.fullName || ""; // Если undefined, берем ""
     return name.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const goToEditUser = () => {
+    onTabChanged("userEdit");
+  };
 
   if (isLoading) return <div>Загрузка...</div>;
 
@@ -33,6 +37,7 @@ export const UserList = () => {
               fullName={user?.fullName}
               username={user.username}
               departamentName={user.departmentName}
+              onClick={goToEditUser}
             />
           ))
         ) : (
