@@ -7,6 +7,7 @@ import { EditUser } from "../../../features/edit-user";
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("userList");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [formData, setFormData] = useState({fullName: "", username: "", departmentId: ""});
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -18,7 +19,7 @@ export const AdminPage = () => {
       case "userList":
         return (
           <div>
-            <UserList onTabChanged={handleTabChange} />
+            <UserList onTabChanged={handleTabChange} formData={formData} setFormData={setFormData}/>
           </div>
         );
       case "userCreate":
@@ -30,7 +31,7 @@ export const AdminPage = () => {
       case "userEdit":
         return (
           <div>
-            <EditUser/>
+            <EditUser userData={formData}/>
           </div>
         );
       case "departmentCreate":

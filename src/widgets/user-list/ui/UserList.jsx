@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { UserListItem } from "./UserListItem";
 import { useUserStore } from "../../../entitites/user/model/useUserStore";
-import { Input } from "../../../shared";
-export const UserList = ({onTabChanged}) => {
+import { ItemsList } from "../../../shared";
+export const UserList = ({ onTabChanged, formData, setFormData }) => {
   const { users, isLoading, fetchUsers } = useUserStore();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,38 +16,47 @@ export const UserList = ({onTabChanged}) => {
     return name.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  const goToEditUser = () => {
+  const goToEditUser = (user) => {
+    setFormData({
+      fullName: user.fullName,
+      username: user.username,
+      departmentName: user.departmentName,
+      id: user.id,
+    });
     onTabChanged("userEdit");
   };
 
   if (isLoading) return <div>Загрузка...</div>;
 
   return (
-    <div className="gap-5 flex flex-col">
-      <Input
-        placeholder="Поиск..."
-        onChange={(e) => setSearchQuery(e.target.value)}
-        value={searchQuery}
-      />
-      <div className="flex flex-col w-full max-w-2xl gap-5">
-        {filteredUsers.length > 0 ? (
-          filteredUsers.map((user) => (
-            <UserListItem
-              key={user.id}
-              fullName={user?.fullName}
-              username={user.username}
-              departamentName={user.departmentName}
-              onClick={goToEditUser}
-            />
-          ))
-        ) : (
-          <p>
-            {searchQuery
-              ? "По вашему запросу никого не найдено :("
-              : "Пользователей пока нет"}
-          </p>
-        )}
-      </div>
-    </div>
+    // <div className="gap-5 flex flex-col">
+    //   <Input
+    //     placeholder="Поиск..."
+    //     onChange={(e) => setSearchQuery(e.target.value)}
+    //     value={searchQuery}
+    //   />
+    //   <div className="flex flex-col w-full max-w-2xl gap-5">
+
+    //   </div>
+    // </div>
+    <ItemsList onSearchChange={(e) => setSearchQuery(e.target.value)} searchValue={searchQuery}>
+      {filteredUsers.length > 0 ? (
+        filteredUsers.map((user) => (
+          <UserListItem
+            key={user.id}
+            fullName={user?.fullName}
+            username={user.username}
+            departmentName={user.departmentName}
+            onClick={() => goToEditUser(user)}
+          />
+        ))
+      ) : (
+        <p>
+          {searchQuery
+            ? "По вашему запросу никого не найдено :("
+            : "Пользователей пока нет"}
+        </p>
+      )}
+    </ItemsList>
   );
 };

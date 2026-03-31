@@ -6,3 +6,4 @@ export {ListItem} from './ui/ListItem';
 export {isRequired, validatePasswordLength, validateEmailFormat} from './lib/validation/rules';
 export {SideBarSection} from './ui/SideBarSection';
 export {Select} from './ui/Select';
+export {ItemsList} from './ui/ItemsList';

@@ -1,5 +1,8 @@
-export const EditUser = () => {
+import { EditUserForm } from "./EditUserForm"
+export const EditUser = ({userData}) => {
     return (
-        <div></div>
+        <div>
+            <EditUserForm/>
+        </div>
     )
 }
