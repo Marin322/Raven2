@@ -1,13 +1,18 @@
 export const UserListItem = ({ fullName, username, departamentName }) => {
   return (
-    <div className="w-full p-5 border-2 border-border-bg text-main-text flex rounded-2xl justify-between">
-      <div className="text-lg">
-        <p>{fullName}</p>
-        <p className="text-[14px] text-blue-600">{username}</p>
+    <div className="flex gap-2">
+      <div className="w-full p-5 border-2 border-border-bg text-main-text flex rounded-2xl justify-between">
+        <div className="text-lg">
+          <p>{fullName}</p>
+          <p className="text-[14px] text-blue-600">{username}</p>
+        </div>
+        <div className="flex items-center">
+          <p>{departamentName}</p>
+        </div>
       </div>
-      <div className="flex items-center">
-        <p>{departamentName}</p>
-      </div>
+      <button className="border-2 border-border-bg cursor-pointer p-5 rounded-2xl">
+        <p>Редактировать</p>
+      </button>
     </div>
   );
 };

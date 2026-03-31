@@ -68,7 +68,7 @@ export const AdminPage = () => {
         </header>
 
         <div className="flex-1 overflow-y-auto p-5 flex justify-center">
-          <div className="w-full max-w-150">
+          <div className="w-full max-w-160">
             {renderContet()}
           </div>
         </div>
