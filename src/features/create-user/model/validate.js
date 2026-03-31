@@ -8,6 +8,8 @@ export const validate = (values) => {
 
     errors.password = isRequired(values.password) || validatePasswordLength(6)(values.password);
 
+    errors.departmentId = isRequired(values.departmentId);
+
     Object.keys(errors).forEach(key => !errors[key] && delete errors[key]);
 
     return errors;

@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import { apiFetch } from "../../../shared/api/api";
+import { createUser } from "../api/userApi";
 
 export const useUserStore = create((set, get) => ({
     users: [],
+    departments: [],
     isLoading: false,
     isLoaded: false,
 
@@ -21,8 +23,34 @@ export const useUserStore = create((set, get) => ({
         }
     },
 
+    createUser: async (userData) => {
+        set({isLoading:true});
+        try {
+            const newUser = await createUser(userData);
+
+            set((state) => ({
+                users: [...state.users, newUser],
+                isLoading: false
+            }));
+
+            return{success: true};
+        } catch(err) {
+            set({isLoading:false});
+            return {success: false, error: err.message};
+        };
+    },
+
     refreshUsers: async () => {
         set({isLoaded: false});
         await get().fetchUsers();
+    },
+
+    fetchDepartments: async () => {
+        try {
+            const data = await apiFetch('/department');
+            set({departments: data || []});
+        } catch(err) {
+            return {error: err.message};
+        };
     }
 }));

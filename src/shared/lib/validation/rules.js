@@ -6,3 +6,5 @@ export const validateEmailFormat = (email) => {
     const emailRegex = /^\S+@\S+\.\S+$/;
     return !emailRegex.test(email) ? "Некорректный email" : null;
 }
+
+export const validateDepartmentId = (value) => !value ? "Поле не может быть пустым" : null;

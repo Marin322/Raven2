@@ -11,7 +11,7 @@ export const UserList = () => {
   if (isLoading) return <div>Загрузка...</div>;
 
   return (
-    <div className="flex flex-col w-full max-w-2xl">
+    <div className="flex flex-col w-full max-w-2xl gap-5">
       {users.length > 0 ? (
         users.map((user) => (
           <UserListItem key={user.id} fullName={user.fullName} username={user.username} departamentName={user.departmentName}/>

@@ -40,7 +40,6 @@ export const SettingsWindow = ({ isOpen, onClose }) => {
             <button className="text-2xl cursor-pointer" onClick={onClose}>✕</button>
           </header>
           <div className="flex flex-col gap-4 overflow-y-auto">
-            {/* Твои фичи */}
           </div>
         </div>
       </div>
