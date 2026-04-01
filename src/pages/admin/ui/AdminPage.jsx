@@ -4,6 +4,7 @@ import { UserList } from "../../../widgets/user-list";
 import { CreateUser } from "../../../features/create-user";
 import { CreateDepartment } from "../../../features/create-department";
 import { EditUser } from "../../../features/edit-user";
+import { DepartmentList } from "../../../widgets/department-list";
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("userList");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ export const AdminPage = () => {
     setIsMenuOpen(false)
   }
 
-  const renderContet = () => {
+  const renderContent = () => {
     switch (activeTab) {
       case "userList":
         return (
@@ -34,6 +35,12 @@ export const AdminPage = () => {
             <EditUser userData={formData}/>
           </div>
         );
+      case "departmentList":
+        return (
+          <div>
+            <DepartmentList/>
+          </div>
+        )
       case "departmentCreate":
         return (
           <div><CreateDepartment/></div>
@@ -73,7 +80,7 @@ export const AdminPage = () => {
 
         <div className="flex-1 overflow-y-auto p-5 flex justify-center">
           <div className="w-full max-w-160">
-            {renderContet()}
+            {renderContent()}
           </div>
         </div>
       </div>

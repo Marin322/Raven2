@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Input } from "../../../shared";
 import { validate } from "../model/validate";
 import { useUserStore } from "../../../entitites/user";
+import { useDepartmentStore } from "../../../entitites/department";
 import { Select } from "../../../shared";
 export const CreateUserForm = () => {
   const [formData, setFormData] = useState({
@@ -11,8 +12,9 @@ export const CreateUserForm = () => {
     departmentId: "",
   });
   const [errors, setErrors] = useState({});
-  const { createUser, departments, fetchDepartments, isLoading } =
+  const { createUser, isLoading } =
     useUserStore();
+  const { departments, fetchDepartments } = useDepartmentStore();
 
   useEffect(() => {
     fetchDepartments();

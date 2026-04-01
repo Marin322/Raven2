@@ -6,6 +6,7 @@ export const CreateDepartmentForm = () => {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({ departmentName: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,9 +16,10 @@ export const CreateDepartmentForm = () => {
     setIsLoading(true);
     try {
       const data = await createDepartment(formData.departmentName);
-      console.log(data);
+      setSuccess("Отдел успешно создан!");
     } catch(err) {
       setErrors((prev) => ({...prev, server: err.message}));
+      setSuccess("");
     } finally {
       setIsLoading(false);
     }
@@ -26,6 +28,7 @@ export const CreateDepartmentForm = () => {
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormData((prev) => ({...prev, [name]: value}));
+    if(success) setSuccess("");
     if(errors[name]) setErrors((prev) => ({...prev, [name]: ""}));
   };
 
@@ -39,6 +42,9 @@ export const CreateDepartmentForm = () => {
         name="departmentName"
         placeholder="Введите название нового отдела..."
       />
+      {success && (
+        <span className="text-md text-green-500 animate-pulse">{success}</span>
+      )}
       <Button onClick={handleSubmit} disabled={isLoading}>{isLoading ? ("Загрузка...") : ("Создать новый отдел")}</Button>
       <span className="text-red-500">{errors.server}</span>
     </div>

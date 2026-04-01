@@ -44,13 +44,4 @@ export const useUserStore = create((set, get) => ({
         set({isLoaded: false});
         await get().fetchUsers();
     },
-
-    fetchDepartments: async () => {
-        try {
-            const data = await apiFetch('/department');
-            set({departments: data || []});
-        } catch(err) {
-            return {error: err.message};
-        };
-    }
 }));

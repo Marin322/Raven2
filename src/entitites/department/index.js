@@ -1,0 +1,1 @@
+export {useDepartmentStore} from './model/useDepartmentStore';
