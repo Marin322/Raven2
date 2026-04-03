@@ -1,10 +1,19 @@
 import { Input } from "../../../shared";
 import { ChatItem } from "../../../entitites/chat";
 import { SettingsWindow } from "../../settingsWindow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SideBarBase } from "../../../shared";
+import { useChatStore } from "../../../entitites/chat/model/useChatStore";
+import { ItemsList } from "../../../shared";
 export const ChatSideBar = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { chats, isLoading, fetchMyChats, setActiveChat, activeChat } =
+    useChatStore();
+
+  useEffect(() => {
+    fetchMyChats();
+  }, [fetchMyChats]);
+
   return (
     <>
       <SideBarBase>
@@ -20,9 +29,25 @@ export const ChatSideBar = () => {
             <Input placeholder="Найти..." />
           </div>
         </header>
-        <nav></nav>
+        <nav>
+          <ItemsList withSearch={false}>
+            {chats.map((chat) => (
+              <ChatItem
+                key={chat.id}
+                name={chat.name}
+                time={chat.lastMessageAt}
+                lastmsg={chat.lastMessage}
+                onClick={() => setActiveChat(chat)}
+                isActive={activeChat?.id === chat.id}
+              />
+            ))}
+          </ItemsList>
+        </nav>
       </SideBarBase>
-      <SettingsWindow isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}/>
+      <SettingsWindow
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </>
   );
 };
