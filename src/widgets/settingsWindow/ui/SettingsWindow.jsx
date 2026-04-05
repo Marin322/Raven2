@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 export const SettingsWindow = ({ isOpen, onClose }) => {
   const [touchStartX, setTouchStartX] = useState(null);
@@ -19,10 +20,11 @@ export const SettingsWindow = ({ isOpen, onClose }) => {
 
     setTouchStartX(null);
   };
-  return (
+
+  const content = (
     <>
       <div
-        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
+        className={`fixed w-full h-full inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={onClose}
@@ -37,12 +39,15 @@ export const SettingsWindow = ({ isOpen, onClose }) => {
         <div className="flex flex-col h-full p-5">
           <header className="flex justify-between">
             <h2 className="text-main-text text-xl">Параметры</h2>
-            <button className="text-2xl cursor-pointer" onClick={onClose}>✕</button>
+            <button className="text-2xl cursor-pointer" onClick={onClose}>
+              ✕
+            </button>
           </header>
-          <div className="flex flex-col gap-4 overflow-y-auto">
-          </div>
+          <div className="flex flex-col gap-4 overflow-y-auto"></div>
         </div>
       </div>
     </>
   );
+
+  return createPortal(content, document.body)
 };
