@@ -10,6 +10,7 @@ export const Button = ({
   const variants = {
     primary: "bg-button-primary-bg text-white",
     outline: "bg-blue",
+    selector: "text-[14px] px-0 py-4 hover:bg-input-bg h-full rounded-[0px] w-full"
   };
   return (
     <button
