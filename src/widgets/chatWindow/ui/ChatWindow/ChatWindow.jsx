@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChatInfoModal } from "./ChatInfoModal";
+import { ChatInfoModal } from "../ChatInfoModal/ChatInfoModal";
 
 export const ChatWindow = ({ chat }) => {
   const [infoIsOpen, setInfoIsOpen] = useState(false);

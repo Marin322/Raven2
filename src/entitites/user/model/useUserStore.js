@@ -10,7 +10,6 @@ export const useUserStore = create((set, get) => ({
 
     fetchUsers: async () => {
         if (get().isLoaded) return;
-
         set({ isLoaded: true });
         try {
             const data = await apiFetch("/search/users");

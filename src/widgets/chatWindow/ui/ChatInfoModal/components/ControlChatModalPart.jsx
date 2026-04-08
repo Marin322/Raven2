@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getUsers } from "../api/userApi";
+import { getUsers } from "../../../api/userApi";
 import { ControlChatUserItem } from "./ControlChatUserItem";
-import { Button } from "../../../shared";
-import { useChatStore } from "../../../entitites/chat/model/useChatStore";
+import { Button } from "../../../../../shared";
+import { useChatStore } from "../../../../../entitites/chat/model/useChatStore";
 
 export const ControlChatModalPart = ({ chatId }) => {
   const [users, setUsers] = useState([]);

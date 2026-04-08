@@ -1,14 +1,17 @@
 import { create } from "zustand";
 import { fetchMyChats, getChatDetails, addNewUsersTargetChat } from "../api/chatApi";
 
-export const useChatStore = create((set) => ({
+export const useChatStore = create((set, get) => ({
     chats: [],
+    chatDetailsCache: {},
     activeChat: null,
     activeChatDetails: null,
     isLoading: false,
     isDetailsLoading: false,
 
     fetchMyChats: async () => {
+        const state = get();
+        if (state.chats.length > 0) return;
         set({ isLoading: true });
         try {
             const data = await fetchMyChats();
@@ -21,10 +24,19 @@ export const useChatStore = create((set) => ({
     },
 
     fetchChatDetails: async (chatId) => {
+        const { chatDetailsCache } = get();
+
+        if (chatDetailsCache[chatId]) {
+            set({ activeChatDetails: chatDetailsCache[chatId]});
+            return;
+        };
         set({isDetailsLoading: true});
         try {
             const data = await getChatDetails(chatId);
-            set({activeChatDetails: data});
+            set((state) => ({
+                activeChatDetails: data,
+                chatDetailsCache: {...state.chatDetailsCache, [chatId]: data}
+            }));
         } catch(err) {
             throw new Error(err.message);
         } finally {

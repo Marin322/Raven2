@@ -1,7 +1,7 @@
 import { act, useState } from "react";
-import { ChatInfoSelector } from "./ChatInfoSelector";
-import { AboutChatModalPart } from "./AboutChatModalPart";
-import { ControlChatModalPart } from "./ControlChatModalPart";
+import { ChatInfoSelector } from "./components/ChatInfoSelector";
+import { AboutChatModalPart } from "./components/AboutChat/AboutChatModalPart";
+import { ControlChatModalPart } from "./components/ControlChatModalPart";
 export const ChatInfoModal = ({ infoIsOpen, chat }) => {
   const [activeTab, setActiveTab] = useState("aboutChat");
   const renderContent = () => {
