@@ -1,17 +1,19 @@
 import { act, useState } from "react";
 import { ChatInfoSelector } from "./ChatInfoSelector";
+import { AboutChatModalPart } from "./AboutChatModalPart";
+import { ControlChatModalPart } from "./ControlChatModalPart";
 export const ChatInfoModal = ({ infoIsOpen, chat }) => {
   const [activeTab, setActiveTab] = useState("aboutChat");
   const renderContent = () => {
     switch(activeTab) {
       case "aboutChat":
-        <div>aboutChat</div>
+        return <AboutChatModalPart chatId={chat.id}/>
       case "media":
-        <div>media</div>
+        return <div>media</div>
       case "settings":
-        <div>settings</div>
+        return <div>settings</div>
       case "controlChat":
-        <div>controlChat</div>
+        return <ControlChatModalPart chatId={chat.id}/>
     }
   }
   return (
@@ -30,7 +32,7 @@ export const ChatInfoModal = ({ infoIsOpen, chat }) => {
         </div>
         <p className="text-main-text text-lg">{chat.name}</p>
         <ChatInfoSelector activeTab={activeTab} setActiveTab={setActiveTab}/>
-        {renderContent}
+        {renderContent()}
       </div>
     </div>
   );

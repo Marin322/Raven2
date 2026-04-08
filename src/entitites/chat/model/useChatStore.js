@@ -1,10 +1,12 @@
 import { create } from "zustand";
-import { fetchMyChats } from "../api/chatApi";
+import { fetchMyChats, getChatDetails, addNewUsersTargetChat } from "../api/chatApi";
 
 export const useChatStore = create((set) => ({
     chats: [],
     activeChat: null,
+    activeChatDetails: null,
     isLoading: false,
+    isDetailsLoading: false,
 
     fetchMyChats: async () => {
         set({ isLoading: true });
@@ -18,6 +20,34 @@ export const useChatStore = create((set) => ({
         }
     },
 
-    setActiveChat: (chat) => set({activeChat: chat}),
-    closeChat: () => set({activeChat: null})
+    fetchChatDetails: async (chatId) => {
+        set({isDetailsLoading: true});
+        try {
+            const data = await getChatDetails(chatId);
+            set({activeChatDetails: data});
+        } catch(err) {
+            throw new Error(err.message);
+        } finally {
+            set({isDetailsLoading: false});
+        };
+    },
+
+    addNewUsersTargetChat: async (usersIds, chatId) => {
+        try {
+            const data = await addNewUsersTargetChat(usersIds, chatId);
+            console.log(data)
+        } catch(err) {
+            throw new Error(err.message);
+        } finally {}
+    },
+
+    setActiveChat: (chat) => set({
+        activeChat: chat,
+        activeChatDetails:null
+    }),
+
+    closeChat: (chat) => set({
+        activeChat: null,
+        activeChatDetails: null
+    })
 }))

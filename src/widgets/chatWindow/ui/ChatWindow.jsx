@@ -3,7 +3,7 @@ import { ChatInfoModal } from "./ChatInfoModal";
 
 export const ChatWindow = ({ chat }) => {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
-  const membersCountTitle = "";
+  let membersCountTitle = "";
   const lastDigit = chat.memberCount % 10;
 
   if (lastDigit === 1) {
@@ -33,6 +33,7 @@ export const ChatWindow = ({ chat }) => {
           <div className="w-10 h-10 rounded-2xl bg-gray-500"></div>
           <div>
             <p className="text-[18px] text-main-text">{chat.name}</p>
+            <p>{chat.memberCount} {membersCountTitle}</p>
           </div>
         </div>
         <div
@@ -42,7 +43,7 @@ export const ChatWindow = ({ chat }) => {
           ☰
         </div>
       </header>
-      <ChatInfoModal infoIsOpen={infoIsOpen} chat={chat}/>
+      <ChatInfoModal infoIsOpen={infoIsOpen} chat={chat} />
     </div>
   );
 };
