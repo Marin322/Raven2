@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetchMyChats, getChatDetails, addNewUsersTargetChat } from "../api/chatApi";
+import { fetchMyChats, getChatDetails, addNewUsersTargetChat, getChatHistory, sendMessageApi } from "../api/chatApi";
 
 export const useChatStore = create((set, get) => ({
     chats: [],
@@ -8,6 +8,7 @@ export const useChatStore = create((set, get) => ({
     activeChatDetails: null,
     isLoading: false,
     isDetailsLoading: false,
+    messages: [],
 
     fetchMyChats: async () => {
         const state = get();
@@ -61,5 +62,37 @@ export const useChatStore = create((set, get) => ({
     closeChat: (chat) => set({
         activeChat: null,
         activeChatDetails: null
-    })
+    }),
+
+    fetchMessages: async (chatId) => {
+        try {
+            const response = await getChatHistory(chatId);
+            console.log(response)
+            set({messages: response.items.reverse()});
+        } catch(err) {
+            console.error(err);
+        };
+    },
+
+    // Добавление одного сообщения (для SignalR)
+  addMessage: (message) => {
+    const { activeChat, messages } = get();
+    if (activeChat && message.chatId === activeChat.id) {
+      set({ messages: [...messages, message] });
+    }
+    
+  },
+  
+  sendMessage: async (chatId, content, file = null) => {
+    const formData = new FormData();
+    formData.append("ChatId", chatId);
+    formData.append("Content", content);
+    if (file) formData.append("File", file);
+
+    try {
+      await sendMessageApi(formData); 
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }))

@@ -34,3 +34,30 @@ export const apiFetch = async (endpoint, options = {}) => {
 
     return response.json();
 }
+
+export const sendMessageApiBase = async (endpoint, options = {}) => {
+    const token = localStorage.getItem("token");
+    const headers = {
+        ...options.headers
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    };
+    const response = await fetch(`${baseURL}${endpoint}`, {
+        ...options,
+        headers,
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) {
+            localStorage.clear();
+            window.location.href = "/auth";
+            return;
+        }
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Ошибка сервера');
+    }
+
+    return response.json();
+}
