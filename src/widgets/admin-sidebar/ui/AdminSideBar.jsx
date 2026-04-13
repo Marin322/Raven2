@@ -87,6 +87,12 @@ export const AdminSideBar = ({ activeTab, onTabChanged, isOpen, onClose }) => {
               onClick={() => onTabChanged("departmentCreate")}
               className="p-2 text-base"
             />
+            <ListItem
+              label="Редактирование отдела"
+              isActive={activeTab === "departmentEdit"}
+              onClick={() => onTabChanged("departmentEdit")}
+              className="p-2 text-base"
+            />
           </SideBarSection>
         </div>
       </div>

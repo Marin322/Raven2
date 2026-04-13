@@ -1,0 +1,1 @@
+export {EditDepartment} from './ui/EditDepartment';

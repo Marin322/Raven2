@@ -1,25 +1,19 @@
 import { useState, useEffect } from "react";
 import { ChatInfoModal } from "../ChatInfoModal/ChatInfoModal";
 import { useChatStore } from "../../../../entitites/chat/model/useChatStore";
+import { ChatMessagesWindow } from "../ChatMessages/ChatMessagesWindow";
 
 export const ChatWindow = ({ chat }) => {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   let membersCountTitle = "";
   const lastDigit = chat.memberCount % 10;
   const { activeChat, messages, fetchMessages, sendMessage } = useChatStore();
-  const [inputText, setInputText] = useState("");
 
   useEffect(() => {
     if (activeChat?.id) {
       fetchMessages(activeChat.id);
     }
   }, [activeChat?.id]);
-
-  const handleSend = () => {
-    if (!inputText.trim()) return;
-    sendMessage(activeChat.id, inputText);
-    setInputText("");
-  };
 
   if (lastDigit === 1) {
     membersCountTitle = "участник";
@@ -61,19 +55,7 @@ export const ChatWindow = ({ chat }) => {
         </div>
       </header>
       <ChatInfoModal infoIsOpen={infoIsOpen} chat={chat} />
-      <div className="messages-list">
-        {messages.map((msg) => (
-          <div key={msg.id}>{msg.content}</div>
-        ))}
-      </div>
-      <div className="fixed bottom-0 w-full flex">
-        <input
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-        className="w-full h-10 bg-amber-400"/>
-        <button onClick={handleSend}>Отправить</button>
-      </div>
+      <ChatMessagesWindow/>
     </div>
   );
 };

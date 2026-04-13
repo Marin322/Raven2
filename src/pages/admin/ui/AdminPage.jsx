@@ -5,6 +5,7 @@ import { CreateUser } from "../../../features/create-user";
 import { CreateDepartment } from "../../../features/create-department";
 import { EditUser } from "../../../features/edit-user";
 import { DepartmentList } from "../../../widgets/department-list";
+import { EditDepartment } from "../../../features/edit-department";
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("userList");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,14 +39,18 @@ export const AdminPage = () => {
       case "departmentList":
         return (
           <div>
-            <DepartmentList/>
+            <DepartmentList onTabChanged={handleTabChange} setFormData={setFormData}/>
           </div>
         )
       case "departmentCreate":
         return (
           <div><CreateDepartment/></div>
         )
-    }
+        case "departmentEdit":
+          return (
+            <div><EditDepartment deptData={formData}/></div>
+          )
+        }
   };
   return (
     <div className="w-full h-screen overflow-hidden bg-main-bg flex relative">
