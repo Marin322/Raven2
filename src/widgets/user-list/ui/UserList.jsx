@@ -21,7 +21,8 @@ export const UserList = ({ onTabChanged, formData, setFormData }) => {
       fullName: user.fullName,
       username: user.username,
       departmentName: user.departmentName,
-      id: user.id,
+      userId: user.id,
+      isFreeze: user.isFrozen
     });
     onTabChanged("userEdit");
   };

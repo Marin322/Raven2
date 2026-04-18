@@ -3,6 +3,6 @@ import { apiFetch } from "../../../shared";
 export const createDepartment = (name) => {
     return apiFetch('/department', {
         method: 'POST',
-        body: JSON.stringify({name: name})
+        body: JSON.stringify({name: name, allowRegularUsersToCreateChats: true})
     });
 };

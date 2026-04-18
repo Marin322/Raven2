@@ -9,7 +9,7 @@ import { EditDepartment } from "../../../features/edit-department";
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("userList");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [formData, setFormData] = useState({fullName: "", username: "", departmentId: ""});
+  const [formData, setFormData] = useState({fullName: "", username: "", departmentName: "", userId: "", isFreeze: ""});
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);

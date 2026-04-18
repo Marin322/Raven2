@@ -24,7 +24,8 @@ export const ChatWindow = ({ chat }) => {
     lastDigit === 6 ||
     lastDigit === 7 ||
     lastDigit === 8 ||
-    lastDigit === 9
+    lastDigit === 9 ||
+    lastDigit === 0
   )
     membersCountTitle = "участников";
 

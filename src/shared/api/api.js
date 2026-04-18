@@ -32,7 +32,8 @@ export const apiFetch = async (endpoint, options = {}) => {
         throw new Error(errorData.message || 'Ошибка сервера');
     }
 
-    return response.json();
+    const text = await response.text(); // Сначала берем ответ как текст
+    return text ? JSON.parse(text) : {};
 }
 
 export const sendMessageApiBase = async (endpoint, options = {}) => {

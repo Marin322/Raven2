@@ -9,3 +9,18 @@ export const GetDeptUsers = (deptId) => {
         method: 'GET',
     });
 };
+
+export const GetUsers = () => {
+    return apiFetch(`/user`, {
+        method: 'GET',
+    });
+}
+
+export const CreateDeptManager = (userId, deptId) => {
+    return apiFetch(`/department/${deptId}/set-head`, {
+        method: 'POST',
+        body: JSON.stringify({
+            userId: userId
+        })
+    });
+};
