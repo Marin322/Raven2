@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { LogOutAccount } from "../api/settingsApi";
+import { Button } from "../../../shared";
 
 export const SettingsWindow = ({ isOpen, onClose }) => {
   const [touchStartX, setTouchStartX] = useState(null);
@@ -20,6 +22,15 @@ export const SettingsWindow = ({ isOpen, onClose }) => {
 
     setTouchStartX(null);
   };
+
+  const LogOutClick = async () => {
+    try {
+      const answer = await LogOutAccount();
+      localStorage.clear();
+    } catch(err) {
+      throw new Errror(err);
+    }
+  }
 
   const content = (
     <>
@@ -44,10 +55,15 @@ export const SettingsWindow = ({ isOpen, onClose }) => {
             </button>
           </header>
           <div className="flex flex-col gap-4 overflow-y-auto"></div>
+          <div className="mt-5 h-full w-full">
+            <div>
+              <Button children="Выйти из аккаунта" onClick={LogOutClick}/>
+            </div>
+          </div>
         </div>
       </div>
     </>
   );
 
-  return createPortal(content, document.body)
+  return createPortal(content, document.body);
 };
