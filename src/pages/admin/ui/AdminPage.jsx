@@ -6,6 +6,7 @@ import { CreateDepartment } from "../../../features/create-department";
 import { EditUser } from "../../../features/edit-user";
 import { DepartmentList } from "../../../widgets/department-list";
 import { EditDepartment } from "../../../features/edit-department";
+import { BannedWordsList } from "../../../widgets/bannedWords-list";
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("userList");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,6 +50,10 @@ export const AdminPage = () => {
         case "departmentEdit":
           return (
             <div><EditDepartment deptData={formData}/></div>
+          )
+        case "bannedWordsList":
+          return (
+            <div><BannedWordsList/></div>
           )
         }
   };

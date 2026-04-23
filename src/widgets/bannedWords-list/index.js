@@ -1,0 +1,1 @@
+export {BannedWordsList} from './ui/BannedWordsList';

@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { act, useState } from "react";
 import { SideBarBase } from "../../../shared";
 import { ListItem } from "../../../shared";
 import { SideBarSection } from "../../../shared";
 import { useNavigate } from "react-router-dom";
 export const AdminSideBar = ({ activeTab, onTabChanged, isOpen, onClose }) => {
-
   const [openMenu, setOpenMenu] = useState(null);
 
   const [touchStartX, setTouchStartX] = useState(null);
@@ -33,15 +32,25 @@ export const AdminSideBar = ({ activeTab, onTabChanged, isOpen, onClose }) => {
   };
 
   return (
-    <SideBarBase isAdminButton={true} isAdminLabel="Выйти из панели" className={`
+    <SideBarBase
+      isAdminButton={true}
+      isAdminLabel="Выйти из панели"
+      className={`
       fixed inset-y-0 left-0 z-50 w-72 bg-main-bg transform transition-transform duration-300 ease-in-out
       ${isOpen ? "translate-x-0" : "-translate-x-full"}
       md:relative md:translate-x-0
-    `} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onClick={() => navigate('/')}>
+    `}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onClick={() => navigate("/")}
+    >
       <div className="p-5">
         <header className="flex justify-between">
           <h2 className="text-main-text text-xl">Админ панель</h2>
-          <button className="text-2xl cursor-pointer md:hidden" onClick={onClose}>
+          <button
+            className="text-2xl cursor-pointer md:hidden"
+            onClick={onClose}
+          >
             ✕
           </button>
         </header>
@@ -93,6 +102,16 @@ export const AdminSideBar = ({ activeTab, onTabChanged, isOpen, onClose }) => {
               onClick={() => onTabChanged("departmentEdit")}
               className="p-2 text-base"
             />
+          </SideBarSection>
+          <SideBarSection
+            label="Запрещённые слова"
+            onToggle={() => toggleMenu("bannedWords")}
+            isOpen={openMenu === "bannedWords"}
+          >
+            <ListItem label="Список запрещённых слов"
+            isActive={activeTab === "bannedWordsList"}
+            onClick={() => onTabChanged("bannedWordsList")}
+            className="p-2 text-base"/>
           </SideBarSection>
         </div>
       </div>
