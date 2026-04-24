@@ -28,20 +28,20 @@ export const useChatStore = create((set, get) => ({
         const { chatDetailsCache } = get();
 
         if (chatDetailsCache[chatId]) {
-            set({ activeChatDetails: chatDetailsCache[chatId]});
+            set({ activeChatDetails: chatDetailsCache[chatId] });
             return;
         };
-        set({isDetailsLoading: true});
+        set({ isDetailsLoading: true });
         try {
             const data = await getChatDetails(chatId);
             set((state) => ({
                 activeChatDetails: data,
-                chatDetailsCache: {...state.chatDetailsCache, [chatId]: data}
+                chatDetailsCache: { ...state.chatDetailsCache, [chatId]: data }
             }));
-        } catch(err) {
+        } catch (err) {
             throw new Error(err.message);
         } finally {
-            set({isDetailsLoading: false});
+            set({ isDetailsLoading: false });
         };
     },
 
@@ -49,14 +49,14 @@ export const useChatStore = create((set, get) => ({
         try {
             const data = await addNewUsersTargetChat(usersIds, chatId);
             console.log(data)
-        } catch(err) {
+        } catch (err) {
             throw new Error(err.message);
-        } finally {}
+        } finally { }
     },
 
     setActiveChat: (chat) => set({
         activeChat: chat,
-        activeChatDetails:null
+        activeChatDetails: null
     }),
 
     closeChat: (chat) => set({
@@ -67,32 +67,120 @@ export const useChatStore = create((set, get) => ({
     fetchMessages: async (chatId) => {
         try {
             const response = await getChatHistory(chatId);
-            console.log(response)
-            set({messages: response.items.reverse()});
-        } catch(err) {
+            // Создаем копию массива перед reverse(), чтобы не мутировать оригинальные данные
+            set({ messages: [...response.items].reverse() });
+        } catch (err) {
             console.error(err);
         };
     },
 
     // Добавление одного сообщения (для SignalR)
-  addMessage: (message) => {
-    const { activeChat, messages } = get();
-    if (activeChat && message.chatId === activeChat.id) {
-      set({ messages: [...messages, message] });
-    }
-    
-  },
-  
-  sendMessage: async (chatId, content, file = null) => {
-    const formData = new FormData();
-    formData.append("ChatId", chatId);
-    formData.append("Content", content);
-    if (file) formData.append("File", file);
+    addMessage: (message) => {
+        const { activeChat, messages } = get();
+        if (activeChat && message.chatId === activeChat.id) {
+            set({ messages: [...messages, message] });
+        }
 
-    try {
-      await sendMessageApi(formData); 
-    } catch (err) {
-      console.error(err);
-    }
-  }
+    },
+
+    sendMessage: async (chatId, content, file = null) => {
+        const token = localStorage.getItem("token");
+        const formData = new FormData();
+        formData.append("ChatId", chatId);
+        formData.append("Content", content || "");
+        if (file) formData.append("File", file);
+    
+        try {
+            const response = await fetch("https://ravenapp.ru/api/Message", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                    // ВАЖНО: Тут ПУСТО, никакого Content-Type
+                },
+                body: formData
+            });
+    
+            if (!response.ok) throw new Error("Ошибка сервера");
+            
+            // После успешной отправки ничего в стейт не пушим, 
+            // ждем прилета сообщения по SignalR
+        } catch (err) {
+            console.error("Ошибка в sendMessage:", err);
+        }
+    },
+
+    sendMessageWithFileApi: async (chatId, content, file) => {
+        const token = localStorage.getItem("token");
+
+        // Создаем объект FormData
+        const formData = new FormData();
+        formData.append("ChatId", chatId);
+        formData.append("Content", content || ""); // Бэкенд может ругаться на null, лучше пустую строку
+
+        if (file) {
+            formData.append("File", file);
+        }
+
+        const response = await fetch("https://ravenapp.ru/api/Message", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+                // 🚫 ВАЖНО: Мы НЕ указываем 'Content-Type': 'application/json'
+                // Браузер сам подставит 'multipart/form-data' и правильный boundary
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error("Ошибка при отправке файла");
+        }
+
+        return await response.json();
+    },
+
+    editMessage: async (id, content) => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`https://ravenapp.ru/api/Message/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ content })
+            });
+            if (!response.ok) throw new Error("Ошибка редактирования");
+        } catch (err) {
+            console.error(err);
+        }
+    },
+
+    deleteMessage: async (id) => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`https://ravenapp.ru/api/Message/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (!response.ok) throw new Error("Ошибка удаления");
+        } catch (err) {
+            console.error(err);
+        }
+    },
+
+    // Методы для SignalR (чтобы обновлять UI в реальном времени)
+    updateMessageInStore: (updatedMessage) => {
+        set((state) => ({
+            messages: state.messages.map((m) => 
+                m.id === updatedMessage.id ? updatedMessage : m
+            )
+        }));
+    },
+
+    removeMessageFromStore: (messageId) => {
+        set((state) => ({
+            messages: state.messages.filter((m) => m.id !== messageId)
+        }));
+    },
+
 }))

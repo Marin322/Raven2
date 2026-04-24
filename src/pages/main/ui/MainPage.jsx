@@ -2,10 +2,11 @@ import { ChatSideBar } from "../../../widgets/chat-sidebar";
 import { ChatWindow } from "../../../widgets/chatWindow";
 import { useChatStore } from "../../../entitites/chat/model/useChatStore";
 import { useState } from "react";
+import { CreateChatModal } from "../../../features/create-chat";
 
 export const MainPage = () => {
   const activeChat = useChatStore((state) => state.activeChat);
-  const [createChatIsOpen, setCreateChatIsOpen] = useState(true);
+  const [createChatIsOpen, setCreateChatIsOpen] = useState(false);
   
   return (
     <div className="w-full h-screen overflow-hidden bg-main-bg flex relative">
@@ -35,7 +36,9 @@ export const MainPage = () => {
         )}
       </div>
       {createChatIsOpen && (
-          <div className="fixed w-full h-full bg-black/50 z-40 bottom-0"></div>
+          <div className={`fixed w-full h-full bg-black/50 z-40 bottom-0 flex items-center justify-center transition-opacity duration-300 inset-0 ${createChatIsOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={() => setCreateChatIsOpen(false)}>
+              <CreateChatModal/>
+          </div>
         )}
     </div>
   );

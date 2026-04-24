@@ -48,7 +48,7 @@ export const ChatSideBar = ({createChatIsOpen, setCreateChatIsOpen}) => {
           </ItemsList>
         </nav>
         <div className="w-full h-20 mb-18 flex justify-end pr-2">
-          <div className="w-20 h-full rounded-[50%] bg-active-text flex items-center justify-center cursor-pointer">
+          <div className="w-20 h-full rounded-[50%] bg-active-text flex items-center justify-center cursor-pointer" onClick={() => setCreateChatIsOpen(true)}>
             <p className="text-[20px] text-black select-none">+</p>
           </div>
         </div>
