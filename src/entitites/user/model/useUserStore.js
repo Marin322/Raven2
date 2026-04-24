@@ -32,10 +32,10 @@ export const useUserStore = create((set, get) => ({
                 isLoading: false
             }));
 
-            return{success: true};
+            return newUser;
         } catch(err) {
             set({isLoading:false});
-            return {success: false, error: err.message};
+            throw err;
         };
     },
 

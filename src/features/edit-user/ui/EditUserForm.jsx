@@ -58,7 +58,7 @@ export const EditUserForm = ({ userId, isFreeze }) => {
         <div className="border-t-4 border-border-bg"></div>
       </div>
 
-      <div>
+      <div className="flex gap-2">
         <p className="text-[18px]">Заморозка: </p>
         {isFreeze ? (
           <div>
@@ -69,8 +69,8 @@ export const EditUserForm = ({ userId, isFreeze }) => {
             <p>Не активна</p>
           </div>
         )}
-        <Button children="Переключить" onClick={freezeUserSubmit}/>
       </div>
+        <Button children="Переключить" onClick={freezeUserSubmit}/>
     </div>
   );
 };

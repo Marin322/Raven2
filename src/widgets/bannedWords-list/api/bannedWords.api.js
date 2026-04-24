@@ -12,3 +12,9 @@ export const getBannedWords = () => {
         method: 'GET'
     })
 }
+
+export const deleteBannedWords = (id) => {
+    return apiFetch(`/admin/banned-words/${id}`, {
+        method: 'DELETE'
+    })
+}

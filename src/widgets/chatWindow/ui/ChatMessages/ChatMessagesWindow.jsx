@@ -13,7 +13,8 @@ export const ChatMessagesWindow = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="w-full h-full p-5 gap-3 flex flex-col items-start">
+      
+      <div className="w-full h-auto max-h-[80%] p-5 gap-3 flex flex-col items-start overflow-auto"> 
         {messages.map((msg) => {
           const isMe = msg.senderId === myId;
           return (

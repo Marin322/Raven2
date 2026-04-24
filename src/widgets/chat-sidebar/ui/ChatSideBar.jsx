@@ -6,7 +6,7 @@ import { SideBarBase } from "../../../shared";
 import { useChatStore } from "../../../entitites/chat/model/useChatStore";
 import { ItemsList } from "../../../shared";
 import { useNavigate } from "react-router-dom";
-export const ChatSideBar = () => {
+export const ChatSideBar = ({createChatIsOpen, setCreateChatIsOpen}) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { chats, isLoading, fetchMyChats, setActiveChat, activeChat } =
     useChatStore();
@@ -47,6 +47,11 @@ export const ChatSideBar = () => {
             ))}
           </ItemsList>
         </nav>
+        <div className="w-full h-20 mb-18 flex justify-end pr-2">
+          <div className="w-20 h-full rounded-[50%] bg-active-text flex items-center justify-center cursor-pointer">
+            <p className="text-[20px] text-black select-none">+</p>
+          </div>
+        </div>
       </SideBarBase>
       <SettingsWindow
         isOpen={isSettingsOpen}

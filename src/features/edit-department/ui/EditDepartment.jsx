@@ -4,6 +4,7 @@ import {
   GetDeptUsers,
   CreateDeptManager,
   GetUsers,
+  ChangeDeptSettings,
 } from "../api/GetDepatmentUsers";
 import { useDepartmentStore } from "../../../entitites/department/model/useDepartmentStore";
 export const EditDepartment = ({ deptData }) => {
@@ -14,6 +15,7 @@ export const EditDepartment = ({ deptData }) => {
     deptId: deptData?.id || "",
     userId: "",
   });
+  const [saveStatus, setSaveStatus] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,13 +35,20 @@ export const EditDepartment = ({ deptData }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setSaveStatus("");
     console.log(formData);
   };
 
   const SaveChanges = async () => {
     if (formData.userId && formData.deptId) {
-      await CreateDeptManager(formData.userId, formData.deptId);
+      const createAnswer = await CreateDeptManager(formData.userId, formData.deptId);
+      setSaveStatus(okak.message)
     }
+
+    if (formData.deptName && formData.deptId) {
+      const changeAnswer = await ChangeDeptSettings(formData.deptName, formData.deptId);
+      setSaveStatus((prev) => okak.message);
+    } 
   };
 
   if (!deptUsers) return <div>Загрузка...</div>;
@@ -81,6 +90,7 @@ export const EditDepartment = ({ deptData }) => {
         ))}
       </Select>
       <Button children="Сохранить" onClick={() => SaveChanges()} />
+        <p>{saveStatus}</p>
     </div>
   );
 };

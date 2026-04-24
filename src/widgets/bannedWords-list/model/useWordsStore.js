@@ -11,5 +11,13 @@ export const useWordsStore = create((set, get) => ({
             const data = await getBannedWords();
             set({bannedWords: data});
         } catch(err) {}
-    }
+    },
+
+    addWordToStore: (word) => set((state) => ({
+        bannedWords: [...state.bannedWords, word]
+     })),
+
+     removeWordFromStore: (id) => set((state) => ({
+        bannedWords: state.bannedWords.filter(word => word.id !== id)
+    }))
 }))

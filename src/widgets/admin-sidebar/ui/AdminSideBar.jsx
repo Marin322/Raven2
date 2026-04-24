@@ -33,7 +33,7 @@ export const AdminSideBar = ({ activeTab, onTabChanged, isOpen, onClose }) => {
 
   return (
     <SideBarBase
-      isAdminButton={true}
+      isAdminButton="true"
       isAdminLabel="Выйти из панели"
       className={`
       fixed inset-y-0 left-0 z-50 w-72 bg-main-bg transform transition-transform duration-300 ease-in-out

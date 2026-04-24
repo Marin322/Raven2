@@ -11,6 +11,7 @@ export const CreateUserForm = () => {
     password: "",
     departmentId: "",
   });
+  const [succesfull, setSuccesFull] = useState(false);
   const [errors, setErrors] = useState({});
   const { createUser, isLoading } =
     useUserStore();
@@ -34,7 +35,7 @@ export const CreateUserForm = () => {
           password: "",
           departmentId: "",
         });
-        alert("Пользователь успешно создан");
+        setSuccesFull(true);
       }
     } catch (err) {
       setErrors((prev) => ({ ...prev, server: err.message }));
@@ -44,6 +45,8 @@ export const CreateUserForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if(succesfull) setSuccesFull(false);
+    if(errors.server) setErrors(errors.server = "");
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -87,12 +90,15 @@ export const CreateUserForm = () => {
           </option>
         ))}
       </Select>
+      {succesfull && (
+        <p className="text-md text-green-500 animate-pulse">Успешная регистрация пользователя!</p>
+      )}
       <Button
         children="Зарегистрировать"
         onClick={handleSubmit}
         disabled={isLoading}
       />
-      <p>{errors.server}</p>
+      <p name="server">{errors.server}</p>
     </div>
   );
 };

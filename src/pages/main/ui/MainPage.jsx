@@ -1,9 +1,11 @@
 import { ChatSideBar } from "../../../widgets/chat-sidebar";
 import { ChatWindow } from "../../../widgets/chatWindow";
 import { useChatStore } from "../../../entitites/chat/model/useChatStore";
+import { useState } from "react";
 
 export const MainPage = () => {
   const activeChat = useChatStore((state) => state.activeChat);
+  const [createChatIsOpen, setCreateChatIsOpen] = useState(true);
   
   return (
     <div className="w-full h-screen overflow-hidden bg-main-bg flex relative">
@@ -14,7 +16,7 @@ export const MainPage = () => {
           ${activeChat ? "-translate-x-full lg:translate-x-0" : "translate-x-0"}
         `}
       >
-        <ChatSideBar />
+        <ChatSideBar createChatIsOpen={createChatIsOpen} setCreateChatIsOpen={setCreateChatIsOpen}/>
       </div>
 
       <div
@@ -32,6 +34,9 @@ export const MainPage = () => {
           </div>
         )}
       </div>
+      {createChatIsOpen && (
+          <div className="fixed w-full h-full bg-black/50 z-40 bottom-0"></div>
+        )}
     </div>
   );
 };

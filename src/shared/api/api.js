@@ -1,5 +1,12 @@
 export const baseURL = "https://ravenapp.ru/api";
 
+class ApiError extends Error {
+    constructor(status, message) {
+        super(message);
+        this.status = status;
+    }
+}
+
 /**
  * Функция для отрпавки запросов
  * @param {string} endpoint - ендпоинт к контроллеру на сервере
@@ -28,8 +35,11 @@ export const apiFetch = async (endpoint, options = {}) => {
             window.location.href = "/auth";
             return;
         }
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Ошибка сервера');
+        const errorText = await response.text();
+        let errorData = {};
+        try { errorData = JSON.parse(errorText); } catch { errorData = { message: errorText }; }
+
+        throw new ApiError(response.status, errorData.message || 'Ошибка сервера');
     }
 
     const text = await response.text(); // Сначала берем ответ как текст
