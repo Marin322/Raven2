@@ -6,7 +6,7 @@ import { SideBarBase } from "../../../shared";
 import { useChatStore } from "../../../entitites/chat/model/useChatStore";
 import { ItemsList } from "../../../shared";
 import { useNavigate } from "react-router-dom";
-export const ChatSideBar = ({ createChatIsOpen, setCreateChatIsOpen }) => {
+export const ChatSideBar = ({ setCreateChatIsOpen }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { chats, isLoading, fetchMyChats, setActiveChat, activeChat } =
     useChatStore();

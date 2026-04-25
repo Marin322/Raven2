@@ -2,9 +2,12 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { LogOutAccount } from "../api/settingsApi";
 import { Button } from "../../../shared";
+import { replace, useNavigate } from "react-router-dom";
 
 export const SettingsWindow = ({ isOpen, onClose }) => {
   const [touchStartX, setTouchStartX] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleTouchStart = (e) => {
     setTouchStartX(e.touches[0].clientX);
@@ -27,6 +30,7 @@ export const SettingsWindow = ({ isOpen, onClose }) => {
     try {
       const answer = await LogOutAccount();
       localStorage.clear();
+      navigate("/auth", {replace: true});
     } catch(err) {
       throw new Errror(err);
     }

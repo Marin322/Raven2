@@ -37,7 +37,7 @@ export const MainPage = () => {
       </div>
       {createChatIsOpen && (
           <div className={`fixed w-full h-full bg-black/50 z-40 bottom-0 flex items-center justify-center transition-opacity duration-300 inset-0 ${createChatIsOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={() => setCreateChatIsOpen(false)}>
-              <CreateChatModal/>
+              <CreateChatModal setCreateChatIsOpen={setCreateChatIsOpen}/>
           </div>
         )}
     </div>

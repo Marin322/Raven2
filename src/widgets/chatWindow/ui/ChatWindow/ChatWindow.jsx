@@ -7,7 +7,7 @@ export const ChatWindow = ({ chat }) => {
   const [infoIsOpen, setInfoIsOpen] = useState(false);
   let membersCountTitle = "";
   const lastDigit = chat.memberCount % 10;
-  const { activeChat, messages, fetchMessages, sendMessage } = useChatStore();
+  const { activeChat, messages, fetchMessages, sendMessage, closeChat } = useChatStore();
 
   useEffect(() => {
     if (activeChat?.id) {
@@ -36,8 +36,9 @@ export const ChatWindow = ({ chat }) => {
   return (
     <div className="w-full h-full">
       <header className="w-full border-b-2 border-border-bg p-5 flex gap-5 items-center">
-        <div className="md:hidden">
-          <p>--</p>
+        <div className="lg:hidden" onClick={closeChat}>
+          <div className="w-6 h-0.5 bg-black relative after:content-[''] after:bg-black after:w-3 after:h-0.5 after:rotate-45 after:absolute after:top-1
+          before:content-[''] before:bg-black before:w-3 before:h-0.5 before:rotate-135 before:absolute before:-top-1"></div>
         </div>
         <div className="flex gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gray-500"></div>

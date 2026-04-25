@@ -42,12 +42,12 @@ export const EditDepartment = ({ deptData }) => {
   const SaveChanges = async () => {
     if (formData.userId && formData.deptId) {
       const createAnswer = await CreateDeptManager(formData.userId, formData.deptId);
-      setSaveStatus(okak.message)
+      setSaveStatus(createAnswer.message)
     }
 
     if (formData.deptName && formData.deptId) {
       const changeAnswer = await ChangeDeptSettings(formData.deptName, formData.deptId);
-      setSaveStatus((prev) => okak.message);
+      setSaveStatus((prev) => changeAnswer.message);
     } 
   };
 
