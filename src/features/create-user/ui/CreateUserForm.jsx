@@ -28,6 +28,7 @@ export const CreateUserForm = () => {
     if (Object.keys(validationErrors).length > 0) return;
     try {
       const result = await createUser(formData);
+      setSuccesFull(true);
       if (result.success) {
         setFormData({
           fullName: "",
@@ -35,7 +36,6 @@ export const CreateUserForm = () => {
           password: "",
           departmentId: "",
         });
-        setSuccesFull(true);
       }
     } catch (err) {
       setErrors((prev) => ({ ...prev, server: err.message }));

@@ -11,7 +11,6 @@ export const ChatMessagesWindow = () => {
   const fileInputRef = useRef(null); // Ссылка на скрытый инпут
 
   const myId = localStorage.getItem("userId");
-
   const handleSend = () => {
     if (!inputText.trim() && !selectedFile) return; // Можно отправить файл без текста
 
@@ -60,7 +59,7 @@ export const ChatMessagesWindow = () => {
                     <a
                       href={msg.mediaUrl}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      
                     >
                       <img
                         src={msg.mediaUrl}

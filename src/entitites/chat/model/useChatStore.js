@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { fetchMyChats, getChatDetails, addNewUsersTargetChat, getChatHistory, sendMessageApi } from "../api/chatApi";
+import { fetchMyChats, getChatDetails, addNewUsersTargetChat2, getChatHistory, sendMessageApi, deleteChatApi, updateChatApi } from "../api/chatApi";
+import {createChat} from '../api/chatApi'
 
 export const useChatStore = create((set, get) => ({
     chats: [],
@@ -47,7 +48,7 @@ export const useChatStore = create((set, get) => ({
 
     addNewUsersTargetChat: async (usersIds, chatId) => {
         try {
-            const data = await addNewUsersTargetChat(usersIds, chatId);
+            const data = await addNewUsersTargetChat2(usersIds, chatId);
             console.log(data)
         } catch (err) {
             throw new Error(err.message);
@@ -182,5 +183,94 @@ export const useChatStore = create((set, get) => ({
             messages: state.messages.filter((m) => m.id !== messageId)
         }));
     },
+
+    createChat: async (formData) => {
+        set({ isLoading: true });
+        try {
+            const newChat = await createChat(formData);
+            
+            // Обновляем список чатов, добавляя новый в начало
+            set((state) => ({
+                chats: [newChat, ...state.chats] 
+            }));
+            
+            return newChat; // Возвращаем данные для компонента, если нужно
+        } catch (err) {
+            // Пробрасываем ошибку дальше, чтобы компонент мог её отобразить
+            throw new Error(err.message || "Ошибка при создании чата");
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+
+    updateChat: async (chatId, name, description) => {
+        set({ isDetailsLoading: true });
+        try {
+            const updatedData = await updateChatApi(chatId, { name, description });
+            
+            // Обновляем детали в кэше и активном чате
+            set((state) => ({
+                activeChatDetails: { ...state.activeChatDetails, name, description },
+                chats: state.chats.map(c => c.id === chatId ? { ...c, name, description } : c),
+                chatDetailsCache: {
+                    ...state.chatDetailsCache,
+                    [chatId]: { ...state.chatDetailsCache[chatId], name, description }
+                }
+            }));
+            return updatedData;
+        } catch (err) {
+            throw new Error(err.message);
+        } finally {
+            set({ isDetailsLoading: false });
+        }
+    },
+
+    deleteChat: async (chatId) => {
+        try {
+            await deleteChatApi(chatId);
+            set((state) => ({
+                chats: state.chats.filter(c => c.id !== chatId),
+                activeChat: state.activeChat?.id === chatId ? null : state.activeChat,
+                activeChatDetails: state.activeChatDetails?.id === chatId ? null : state.activeChatDetails
+            }));
+        } catch (err) {
+            throw new Error(err.message);
+        }
+    },
+
+    uploadAvatar: async (chatId, file) => {
+        try {
+          const response = await uploadChatAvatarApi(chatId, file);
+          const newUrl = response.avatarUrl;
+    
+          // Обновляем URL аватара в списке чатов и в деталях активного чата
+          set((state) => ({
+            chats: state.chats.map((c) =>
+              c.id === chatId ? { ...c, avatarUrl: newUrl } : c
+            ),
+            activeChatDetails: state.activeChatDetails?.id === chatId 
+              ? { ...state.activeChatDetails, avatarUrl: newUrl } 
+              : state.activeChatDetails,
+          }));
+        } catch (err) {
+          console.error("Ошибка загрузки аватара:", err);
+        }
+      },
+    
+      deleteAvatar: async (chatId) => {
+        try {
+          await deleteChatAvatarApi(chatId);
+          set((state) => ({
+            chats: state.chats.map((c) =>
+              c.id === chatId ? { ...c, avatarUrl: null } : c
+            ),
+            activeChatDetails: state.activeChatDetails?.id === chatId 
+              ? { ...state.activeChatDetails, avatarUrl: null } 
+              : state.activeChatDetails,
+          }));
+        } catch (err) {
+          console.error("Ошибка удаления аватара:", err);
+        }
+      },
 
 }))

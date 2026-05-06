@@ -12,10 +12,13 @@ export const getChatDetails = (chatId) => {
     });
 };
 
-export const addNewUsersTargetChat = (usersIds, chatId) => {
+export const addNewUsersTargetChat2 = (usersIds, chatId) => {
+    const body = {
+        userIds: usersIds
+    }
     return apiFetch(`/chat/${chatId}/members`, {
         method: 'POST',
-        body: JSON.stringify(usersIds)
+        body: JSON.stringify(body)
     });
 };
 
@@ -29,5 +32,25 @@ export const sendMessageApi = (formData) => {
     return sendMessageApiBase(`/message`, {
         method: 'POST',
         body: formData
+    });
+};
+
+export const createChat = (formData) => {
+    return apiFetch(`/chat`, {
+        method: 'POST',
+        body: JSON.stringify(formData)
+    });
+};
+
+export const updateChatApi = (chatId, data) => {
+    return apiFetch(`/chat/${chatId}`, {
+        method: 'PUT',
+        body: JSON.stringify(data)
+    });
+};
+
+export const deleteChatApi = (chatId) => {
+    return apiFetch(`/chat/${chatId}`, {
+        method: 'DELETE'
     });
 };

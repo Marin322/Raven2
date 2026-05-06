@@ -10,35 +10,51 @@ export const RegisterCompany = () => {
     username: "",
     password: "",
   });
+
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validate(formData, false);
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
-    setIsLoading(true);
-    try {
-      const registerData = {
-        companyName: formData.companyName,
-        fullName: formData.fullName,
-        username: formData.username,
-        password: formData.password,
-      };
-      const data = await registerCompany(registerData);
-      console.log("Компания создана!", data);
-    } catch (err) {
-      console.log("okak");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Используем стейт для хранения успешного ответа
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+    // Очищаем ошибки при вводе
+    if (errors[name] || errors.server) {
+      setErrors((prev) => ({ ...prev, [name]: "", server: "" }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // 1. Валидация фронтенда
+    const validationErrors = validate(formData, false);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setIsLoading(true);
+    setSuccessMessage(""); // Сбрасываем старые сообщения
+
+    try {
+      // 2. Запрос к API
+      const response = await registerCompany(formData);
+
+      // Если все ок — сохраняем сообщение об успехе
+      setSuccessMessage("Компания успешно зарегистрирована!");
+      console.log("Успех:", response);
+    } catch (err) {
+      // 3. Тот самый момент: извлекаем сообщение, которое мы настроили в apiFetch
+      // err.message теперь содержит "Компания с таким названием уже существует"
+      setErrors((prev) => ({
+        ...prev,
+        server: err.message || "Непредвиденная ошибка сервера",
+      }));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -91,6 +107,18 @@ export const RegisterCompany = () => {
       >
         {isLoading ? "Регистрируем..." : "Зарегистрироваться"}
       </Button>
+      {errors.server && (
+        <p className="text-red-600 text-sm text-center font-medium">
+          {errors.server}
+        </p>
+      )}
+
+      {/* Отображение успеха */}
+      {successMessage && (
+        <p className="text-green-600 text-sm text-center font-medium">
+          {successMessage}
+        </p>
+      )}
     </div>
   );
 };

@@ -7,13 +7,6 @@ class ApiError extends Error {
     }
 }
 
-/**
- * Функция для отрпавки запросов
- * @param {string} endpoint - ендпоинт к контроллеру на сервере
- * @param {Object} options - дополнительные опции в запросе
- * @returns {Promise<any>} результат запроса или ошибка
- * @example apiFetch("/users/getusers")
- */
 export const apiFetch = async (endpoint, options = {}) => {
     const token = localStorage.getItem("token");
     const headers = {
@@ -42,10 +35,11 @@ export const apiFetch = async (endpoint, options = {}) => {
         throw new ApiError(response.status, errorData.message || 'Ошибка сервера');
     }
 
-    const text = await response.text(); // Сначала берем ответ как текст
+    const text = await response.text();
     return text ? JSON.parse(text) : {};
 }
 
+// ПРАВКА ТУТ: Добавлена обработка текстовых ошибок, как в первой функции
 export const sendMessageApiBase = async (endpoint, options = {}) => {
     const token = localStorage.getItem("token");
     const headers = {
@@ -66,9 +60,23 @@ export const sendMessageApiBase = async (endpoint, options = {}) => {
             window.location.href = "/auth";
             return;
         }
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Ошибка сервера');
+        
+        // Вместо await response.json(), который падает на строке
+        const errorText = await response.text();
+        let errorMessage = 'Ошибка сервера';
+        
+        try {
+            const errorData = JSON.parse(errorText);
+            errorMessage = errorData.message || errorMessage;
+        } catch {
+            // Если пришла просто строка (твой случай), берем её как есть
+            errorMessage = errorText;
+        }
+        
+        throw new ApiError(response.status, errorMessage);
     }
 
-    return response.json();
+    // Для успеха тоже лучше использовать проверку на наличие текста
+    const successText = await response.text();
+    return successText ? JSON.parse(successText) : {};
 }
