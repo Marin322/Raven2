@@ -54,3 +54,25 @@ export const deleteChatApi = (chatId) => {
         method: 'DELETE'
     });
 };
+
+export const uploadChatAvatarApi = (chatId, file) => {
+    const formData = new FormData();
+    formData.append("avatar", file); // Ключ "avatar" должен совпадать с C#
+
+    return sendMessageApiBase(`/ChatAvatar/${chatId}`, {
+        method: "POST",
+        body: formData,
+    });
+};
+
+export const deleteChatAvatarApi = (chatId) => {
+    return apiFetch(`/ChatAvatar/${chatId}`, { 
+        method: "DELETE" 
+    });
+};
+
+export const getChatAvatarApi = (chatId) => {
+    return apiFetch(`/ChatAvatar/${chatId}`, { 
+        method: "GET" 
+    });
+};

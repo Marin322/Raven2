@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetchMyChats, getChatDetails, addNewUsersTargetChat2, getChatHistory, sendMessageApi, deleteChatApi, updateChatApi } from "../api/chatApi";
+import { fetchMyChats, getChatDetails, addNewUsersTargetChat2, getChatHistory, sendMessageApi, deleteChatApi, updateChatApi, uploadChatAvatarApi } from "../api/chatApi";
 import {createChat} from '../api/chatApi'
 
 export const useChatStore = create((set, get) => ({
@@ -272,5 +272,6 @@ export const useChatStore = create((set, get) => ({
           console.error("Ошибка удаления аватара:", err);
         }
       },
+      
 
 }))

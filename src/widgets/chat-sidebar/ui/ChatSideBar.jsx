@@ -47,6 +47,7 @@ export const ChatSideBar = ({ setCreateChatIsOpen }) => {
               <ChatItem
                 key={chat.id}
                 name={chat.name}
+                image={chat.avatarUrl}
                 time={chat.lastMessageAt}
                 lastmsg={chat.lastMessage}
                 onClick={() => setActiveChat(chat)}
