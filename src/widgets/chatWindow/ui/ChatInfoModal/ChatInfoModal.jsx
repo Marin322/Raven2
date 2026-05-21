@@ -10,7 +10,7 @@ export const ChatInfoModal = ({ infoIsOpen, chat }) => {
       case "aboutChat":
         return <AboutChatModalPart chatId={chat.id}/>
       case "media":
-        return <div>media</div>
+        return <div>Временно недоступно</div>
       case "settings":
         return <ChatSettingsPart chatId={chat.id}/>
       case "controlChat":
