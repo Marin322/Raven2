@@ -25,10 +25,10 @@ export const CreateDeptManager = (userId, deptId) => {
     });
 };
 
-export const ChangeDeptSettings = (formdata, id) => {
+export const ChangeDeptSettings = (name, id) => {
     return apiFetch(`/department/${id}`, {
-        method: 'POST',
-        body: JSON.stringify(formdata)
+        method: 'PUT',  // ✅
+        body: JSON.stringify({ name })
     });
 };
 

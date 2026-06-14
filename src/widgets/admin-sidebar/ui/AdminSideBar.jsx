@@ -108,10 +108,30 @@ export const AdminSideBar = ({ activeTab, onTabChanged, isOpen, onClose }) => {
             onToggle={() => toggleMenu("bannedWords")}
             isOpen={openMenu === "bannedWords"}
           >
-            <ListItem label="Список запрещённых слов"
-            isActive={activeTab === "bannedWordsList"}
-            onClick={() => onTabChanged("bannedWordsList")}
-            className="p-2 text-base"/>
+            <ListItem
+              label="Список запрещённых слов"
+              isActive={activeTab === "bannedWordsList"}
+              onClick={() => onTabChanged("bannedWordsList")}
+              className="p-2 text-base"
+            />
+          </SideBarSection>
+          <SideBarSection
+            label="Аналитика"
+            onToggle={() => toggleMenu("analytics")}
+            isOpen={openMenu === "analytics"}
+          >
+            <ListItem
+              label="Статистика"
+              isActive={activeTab === "statistics"}
+              onClick={() => onTabChanged("statistics")}
+              className="p-2 text-base"
+            />
+            <ListItem
+              label="Логи аудита"
+              isActive={activeTab === "auditLogs"}
+              onClick={() => onTabChanged("auditLogs")}
+              className="p-2 text-base"
+            />
           </SideBarSection>
         </div>
       </div>
