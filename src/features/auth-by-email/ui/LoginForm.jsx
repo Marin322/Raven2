@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input, Button } from "../../../shared";
 import { validate } from "../model/validate";
 import { loginByPassword } from "../api/authApi";
+import { apiFetch } from "../../../shared/api/api";
 import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
@@ -24,10 +25,19 @@ export const LoginForm = () => {
       localStorage.setItem("isAdmin", data.isGlobalAdmin);
       localStorage.setItem("companyId", data.companyId);
 
-      navigate("/", {replace: true});
-      
+      // Подтягиваем дополнительные данные текущего пользователя (departmentId и т.п.)
+      try {
+        const me = await apiFetch("/User/me");
+        localStorage.setItem("departmentId", me.departmentId ?? "");
+      } catch (meErr) {
+        console.error("Не удалось получить данные пользователя:", meErr);
+        localStorage.setItem("departmentId", "");
+      }
+
+      navigate("/", { replace: true });
+
     } catch (err) {
-      setErrors((prev) => ({...prev, server: err.message}));
+      setErrors((prev) => ({ ...prev, server: err.message }));
     }
     finally {
       setIsLoading(false);

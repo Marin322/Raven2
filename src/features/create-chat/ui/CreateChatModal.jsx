@@ -6,8 +6,7 @@ import { useChatStore } from "../../../entitites/chat/model/useChatStore";
 export const CreateChatModal = ({ setCreateChatIsOpen }) => {
   const [formData, setFormData] = useState({ name: "", description: "" });
   const [errors, setErrors] = useState({});
-  
-  // Достаем метод создания и общий статус загрузки из стора
+
   const createChat = useChatStore((state) => state.createChat);
   const isLoading = useChatStore((state) => state.isLoading);
 
@@ -19,19 +18,20 @@ export const CreateChatModal = ({ setCreateChatIsOpen }) => {
 
   const createSubmit = async (e) => {
     e.preventDefault();
-    
+
     const validationErrors = validate(formData);
     setErrors(validationErrors);
-    
     if (Object.keys(validationErrors).length > 0) return;
 
+    const departmentId = localStorage.getItem("departmentId") || null;
+
     try {
-      // Вызываем действие из стора
-      await createChat(formData);
-      // Если запрос успешен — закрываем модалку
+      await createChat({
+        ...formData,
+        departmentId,
+      });
       setCreateChatIsOpen(false);
     } catch (err) {
-      // Обрабатываем ошибку сервера
       setErrors((prev) => ({ ...prev, server: err.message }));
     }
   };
@@ -49,7 +49,6 @@ export const CreateChatModal = ({ setCreateChatIsOpen }) => {
           className="w-8 h-8 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors" 
           onClick={() => setCreateChatIsOpen(false)}
         >
-          {/* Иконка закрытия (упрощена для чистоты кода) */}
           <span className="text-2xl">×</span>
         </button>
       </div>
