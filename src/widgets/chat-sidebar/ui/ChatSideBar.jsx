@@ -6,8 +6,10 @@ import { SideBarBase } from "../../../shared";
 import { useChatStore } from "../../../entitites/chat/model/useChatStore";
 import { ItemsList } from "../../../shared";
 import { useNavigate } from "react-router-dom";
+
 export const ChatSideBar = ({ setCreateChatIsOpen }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { chats, isLoading, fetchMyChats, setActiveChat, activeChat } =
     useChatStore();
 
@@ -17,6 +19,10 @@ export const ChatSideBar = ({ setCreateChatIsOpen }) => {
   useEffect(() => {
     fetchMyChats();
   }, [fetchMyChats]);
+
+  const filteredChats = chats.filter((chat) =>
+    chat.name?.toLowerCase().includes(searchQuery.trim().toLowerCase())
+  );
 
   return (
     <>
@@ -38,22 +44,34 @@ export const ChatSideBar = ({ setCreateChatIsOpen }) => {
             </div>
           </div>
           <div>
-            <Input placeholder="Найти..." />
+            <Input
+              placeholder="Найти..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </header>
         <nav className="overflow-auto flex-1 min-h-0 pb-4">
           <ItemsList withSearch={false}>
-            {chats.map((chat) => (
-              <ChatItem
-                key={chat.id}
-                name={chat.name}
-                image={chat.avatarUrl}
-                time={chat.lastMessageAt}
-                lastmsg={chat.lastMessage}
-                onClick={() => setActiveChat(chat)}
-                isActive={activeChat?.id === chat.id}
-              />
-            ))}
+            {filteredChats.length > 0 ? (
+              filteredChats.map((chat) => (
+                <ChatItem
+                  key={chat.id}
+                  name={chat.name}
+                  image={chat.avatarUrl}
+                  time={chat.lastMessageAt}
+                  lastmsg={chat.lastMessage}
+                  onClick={() => setActiveChat(chat)}
+                  isActive={activeChat?.id === chat.id}
+                />
+              ))
+            ) : (
+              !isLoading && (
+                <p className="text-center text-sm text-main-text/50 mt-4">
+                  Ничего не найдено
+                </p>
+              )
+            )}
           </ItemsList>
         </nav>
         <div className="w-full h-20 mb-18 flex justify-end pr-2">

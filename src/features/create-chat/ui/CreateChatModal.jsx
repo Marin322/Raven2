@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Input } from "../../../shared";
 import { validate } from "../model/validate";
 import { useChatStore } from "../../../entitites/chat/model/useChatStore";
+import { useDepartmentStore } from "../../../entitites/department/model/useDepartmentStore"; // поправь путь под реальный
 
 export const CreateChatModal = ({ setCreateChatIsOpen }) => {
-  const [formData, setFormData] = useState({ name: "", description: "" });
+  const [formData, setFormData] = useState({ name: "", description: "", departmentId: "" });
   const [errors, setErrors] = useState({});
 
   const createChat = useChatStore((state) => state.createChat);
   const isLoading = useChatStore((state) => state.isLoading);
+
+  const departments = useDepartmentStore((state) => state.departments);
+  const fetchDepartments = useDepartmentStore((state) => state.fetchDepartments);
+
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const ownDepartmentId = localStorage.getItem("departmentId") || "";
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchDepartments();
+    }
+  }, [isAdmin, fetchDepartments]);
 
   const inputsChange = (e) => {
     const { name, value } = e.target;
@@ -19,11 +32,12 @@ export const CreateChatModal = ({ setCreateChatIsOpen }) => {
   const createSubmit = async (e) => {
     e.preventDefault();
 
-    const validationErrors = validate(formData);
+    const validationErrors = validate(formData, isAdmin);
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    const departmentId = localStorage.getItem("departmentId") || null;
+    // Для админа отдел выбирается вручную, для остальных — подставляется их собственный
+    const departmentId = isAdmin ? formData.departmentId : (ownDepartmentId || null);
 
     try {
       await createChat({
@@ -69,6 +83,26 @@ export const CreateChatModal = ({ setCreateChatIsOpen }) => {
           error={errors?.description} 
           onChange={inputsChange}
         />
+
+        {isAdmin && (
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-main-text">Отдел</label>
+            <select
+              name="departmentId"
+              value={formData.departmentId}
+              onChange={inputsChange}
+              className="w-full rounded-lg border p-2 bg-modal-bg text-main-text"
+            >
+              <option value="">Выберите отдел...</option>
+              {departments.map((dep) => (
+                <option key={dep.id} value={dep.id}>{dep.name}</option>
+              ))}
+            </select>
+            {errors?.departmentId && (
+              <p className="text-red-500 text-sm">{errors.departmentId}</p>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="mt-4 flex flex-col gap-2">

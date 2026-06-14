@@ -31,3 +31,17 @@ export const ChangeDeptSettings = (formdata, id) => {
         body: JSON.stringify(formdata)
     });
 };
+
+export const UpdateDepartmentSettings = async (departmentId, allowRegularUsersToCreateChats) => {
+    return apiFetch(`/Department/${departmentId}/settings`, {
+        method: "PATCH",
+        body: JSON.stringify({ allowRegularUsersToCreateChats }),
+    });
+};
+
+export const DeleteDepartment = async (departmentId) => {
+    return apiFetch(`/Department/${departmentId}`, {
+        method: "DELETE",
+    });
+};
+

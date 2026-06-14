@@ -2,11 +2,15 @@ import { Input, Button } from "../../../shared";
 import { useState } from "react";
 import { validate } from "../model/validate";
 import { createDepartment } from "../api/CreateDepartmentApi";
+import { useDepartmentStore } from "../../../entitites/department/model/useDepartmentStore"; // поправь путь под реальный
+
 export const CreateDepartmentForm = () => {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({ departmentName: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState("");
+
+  const addDepartment = useDepartmentStore((state) => state.addDepartment);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +20,9 @@ export const CreateDepartmentForm = () => {
     setIsLoading(true);
     try {
       const data = await createDepartment(formData.departmentName);
+      addDepartment(data);
       setSuccess("Отдел успешно создан!");
+      setFormData({ departmentName: "" });
     } catch(err) {
       setErrors((prev) => ({...prev, server: err.message}));
       setSuccess("");
