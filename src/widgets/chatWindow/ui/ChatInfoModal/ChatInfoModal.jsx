@@ -1,22 +1,30 @@
-import { act, useState } from "react";
+import { useState } from "react";
 import { ChatInfoSelector } from "./components/ChatInfoSelector";
 import { AboutChatModalPart } from "./components/AboutChat/AboutChatModalPart";
 import { ControlChatModalPart } from "./components/ControlChatModalPart";
 import { ChatSettingsPart } from "./components/ChatSettingsPart";
+
 export const ChatInfoModal = ({ infoIsOpen, chat }) => {
   const [activeTab, setActiveTab] = useState("aboutChat");
+
   const renderContent = () => {
-    switch(activeTab) {
+    switch (activeTab) {
       case "aboutChat":
-        return <AboutChatModalPart chatId={chat.id}/>
+        return <AboutChatModalPart chatId={chat.id} />;
       case "media":
-        return <div>Временно недоступно</div>
+        return <div className="text-second-text p-4 text-center opacity-50">Временно недоступно</div>;
       case "settings":
-        return <ChatSettingsPart chatId={chat.id}/>
+        return <ChatSettingsPart chatId={chat.id} />;
       case "controlChat":
-        return <ControlChatModalPart chatId={chat.id}/>
+        return <ControlChatModalPart chatId={chat.id} />;
+      default:
+        return null;
     }
-  }
+  };
+
+  // Вычисляем первую букву названия чата для заглушки
+  const firstLetter = chat.name ? chat.name[0].toUpperCase() : "?";
+
   return (
     <div
       className={`
@@ -28,12 +36,27 @@ export const ChatInfoModal = ({ infoIsOpen, chat }) => {
         `}
     >
       <div className="w-full h-full flex flex-col items-center gap-2 pt-5">
-        <div className="w-25 h-25 rounded-[50%] bg-gray-500">
-          <img/>
+        
+        {/* Аватарка или первая буква чата */}
+        {chat.avatarUrl ? (
+          <img
+            className="w-25 h-25 rounded-full object-cover bg-gray-500 border-2 border-border-bg shrink-0"
+            src={chat.avatarUrl}
+            alt={chat.name}
+          />
+        ) : (
+          <div className="w-25 h-25 rounded-full bg-gray-200 shrink-0 flex items-center justify-center text-black text-3xl font-bold select-none">
+            {firstLetter}
+          </div>
+        )}
+
+        <p className="text-main-text text-lg font-semibold mt-1">{chat.name}</p>
+        
+        <ChatInfoSelector activeTab={activeTab} setActiveTab={setActiveTab} />
+        
+        <div className="w-full flex-1 overflow-auto px-4 py-2">
+          {renderContent()}
         </div>
-        <p className="text-main-text text-lg">{chat.name}</p>
-        <ChatInfoSelector activeTab={activeTab} setActiveTab={setActiveTab}/>
-        {renderContent()}
       </div>
     </div>
   );
