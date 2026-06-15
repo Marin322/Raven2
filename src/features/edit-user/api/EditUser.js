@@ -1,14 +1,21 @@
 import { apiFetch } from "../../../shared";
 
-export const editUser = (userData, userId) => {
-    return apiFetch(`/user/${userId}`, {
-        method: 'POST',
-        body: JSON.stringify(userData)
+export const editUser = (formData, userId) =>
+    apiFetch(`/user/${userId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+            fullName:     formData.fullName     || undefined,
+            position:     formData.position     || undefined,
+            departmentId: formData.departmentId || undefined,
+        }),
     });
-};
 
-export const freezeUser = (userId) => {
-    return apiFetch(`/user/${userId}/toggle-freeze`, {
-        method: 'POST'
+export const freezeUser = (userId) =>
+    apiFetch(`/user/${userId}/toggle-freeze`, {
+        method: "POST",
     });
-};
+
+export const deleteUser = (userId) =>
+    apiFetch(`/user/${userId}`, {
+        method: "DELETE",
+    });

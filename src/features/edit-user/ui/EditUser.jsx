@@ -21,7 +21,11 @@ export const EditUser = ({ userData }) => {
           </div>
         </div>
       </div>
-      <EditUserForm userId={userData.userId} isFreeze={userData.isFreeze}/>
+      <EditUserForm
+        userId={userData.userId}
+        initialData={userData} // fullName, position, departmentId, isFreeze
+        onDeleted={() => onTabChanged("userList")}
+      />
     </div>
   );
 };

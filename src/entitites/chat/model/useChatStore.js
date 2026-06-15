@@ -15,7 +15,7 @@ export const useChatStore = create((set, get) => ({
         const state = get();
         if (state.chats.length > 0) return;
         set({ isLoading: true });
-        try {
+        try {   
             const data = await fetchMyChats();
             set({ chats: data });
         } catch (err) {
@@ -272,6 +272,13 @@ export const useChatStore = create((set, get) => ({
           console.error("Ошибка удаления аватара:", err);
         }
       },
+
+      invalidateChatDetails: (chatId) => {
+        set(s => ({
+            chatDetailsCache: { ...s.chatDetailsCache, [chatId]: undefined },
+            activeChatDetails: s.activeChatDetails?.id === chatId ? null : s.activeChatDetails,
+        }));
+    },
       
 
 }))

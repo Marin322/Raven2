@@ -32,7 +32,7 @@ export const ChatWindow = ({ chat }) => {
   const firstLetter = chat.name ? chat.name[0].toUpperCase() : "?";
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full flex flex-col">
       <header className="w-full border-b-2 border-border-bg p-5 flex gap-5 items-center">
         <div className="lg:hidden" onClick={closeChat}>
           <div className="w-6 h-0.5 bg-black relative after:content-[''] after:bg-black after:w-3 after:h-0.5 after:rotate-45 after:absolute after:top-1
