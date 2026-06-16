@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input, Button } from "../../../shared";
 import { editUser, freezeUser, deleteUser } from "../api/EditUser";
 import { useDepartmentStore } from "../../../entitites/department/model/useDepartmentStore";
-import { useEffect } from "react";
 
 export const EditUserForm = ({ userId, initialData, onDeleted }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus]       = useState("");
+    const [status, setStatus]       = useState({ text: "", type: "" }); // type: "success" | "error"
     const [isFrozen, setIsFrozen]   = useState(initialData?.isFreeze ?? false);
+    const statusTimerRef            = useRef(null);
 
     const { departments, fetchDepartments } = useDepartmentStore();
 
@@ -21,21 +21,35 @@ export const EditUserForm = ({ userId, initialData, onDeleted }) => {
         fetchDepartments();
     }, []);
 
+    // Сброс статуса через 3 секунды
+    const showStatus = (text, type = "success") => {
+        if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
+        setStatus({ text, type });
+        statusTimerRef.current = setTimeout(() => {
+            setStatus({ text: "", type: "" });
+        }, 3000);
+    };
+
+    // Чистим таймер при размонтировании
+    useEffect(() => {
+        return () => {
+            if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
+        };
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setStatus("");
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSave = async () => {
         if (!userId) return;
         setIsLoading(true);
-        setStatus("");
         try {
             await editUser(formData, userId);
-            setStatus("Изменения сохранены");
+            showStatus("Изменения сохранены", "success");
         } catch (err) {
-            setStatus(err.message || "Ошибка при сохранении");
+            showStatus(err.message || "Ошибка при сохранении", "error");
         } finally {
             setIsLoading(false);
         }
@@ -44,13 +58,12 @@ export const EditUserForm = ({ userId, initialData, onDeleted }) => {
     const handleFreeze = async () => {
         if (!userId) return;
         setIsLoading(true);
-        setStatus("");
         try {
             const result = await freezeUser(userId);
             setIsFrozen(result.isFrozen);
-            setStatus(result.isFrozen ? "Пользователь заморожен" : "Пользователь разморожен");
+            showStatus(result.isFrozen ? "Пользователь заморожен" : "Пользователь разморожен", "success");
         } catch (err) {
-            setStatus(err.message || "Ошибка при заморозке");
+            showStatus(err.message || "Ошибка при заморозке", "error");
         } finally {
             setIsLoading(false);
         }
@@ -60,21 +73,17 @@ export const EditUserForm = ({ userId, initialData, onDeleted }) => {
         if (!userId) return;
         if (!window.confirm("Удалить пользователя? Это действие необратимо.")) return;
         setIsLoading(true);
-        setStatus("");
         try {
             await deleteUser(userId);
-            onDeleted?.();
+            onDeleted?.();  // ← переключает на список
         } catch (err) {
-            setStatus(err.message || "Ошибка при удалении");
-        } finally {
+            showStatus(err.message || "Ошибка при удалении", "error");
             setIsLoading(false);
         }
     };
 
     return (
         <div className="flex flex-col gap-5">
-
-            {/* Основные данные */}
             <Input
                 label="ФИО"
                 placeholder="Новое ФИО пользователя..."
@@ -90,7 +99,6 @@ export const EditUserForm = ({ userId, initialData, onDeleted }) => {
                 onChange={handleChange}
             />
 
-            {/* Смена отдела */}
             <div className="flex flex-col gap-1">
                 <label className="text-gray-400 text-sm">Отдел</label>
                 <select
@@ -115,7 +123,6 @@ export const EditUserForm = ({ userId, initialData, onDeleted }) => {
                 <p className="text-gray-400">Заморозка аккаунта</p>
                 <div className="border-t-4 border-border-bg mb-4"></div>
             </div>
-
             <div className="flex items-center gap-3">
                 <p className="text-[18px]">Статус:</p>
                 <span className={isFrozen ? "text-blue-400" : "text-green-400"}>
@@ -139,9 +146,14 @@ export const EditUserForm = ({ userId, initialData, onDeleted }) => {
                 Удалить пользователя
             </Button>
 
-            {status && (
-                <p className="text-sm text-gray-400">{status}</p>
-            )}
+            {/* Статус — фиксированная высота чтобы не моргало */}
+            <div className="h-5">
+                {status.text && (
+                    <p className={`text-sm ${status.type === "error" ? "text-red-400" : "text-green-400"}`}>
+                        {status.text}
+                    </p>
+                )}
+            </div>
         </div>
     );
 };

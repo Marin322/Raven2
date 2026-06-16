@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { LogOutAccount } from "../api/settingsApi";
 import { Button } from "../../../shared";
 import { replace, useNavigate } from "react-router-dom";
+import { useChatStore } from "../../../entitites/chat/model/useChatStore";
 
 export const SettingsWindow = ({ isOpen, onClose }) => {
   const [touchStartX, setTouchStartX] = useState(null);
@@ -29,10 +30,11 @@ export const SettingsWindow = ({ isOpen, onClose }) => {
   const LogOutClick = async () => {
     try {
       const answer = await LogOutAccount();
+      useChatStore.getState().clearStore();
       localStorage.clear();
       navigate("/auth", {replace: true});
     } catch(err) {
-      throw new Errror(err);
+      throw new Error(err);
     }
   }
 

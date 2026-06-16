@@ -4,7 +4,7 @@ import { AboutChatModalPart } from "./components/AboutChat/AboutChatModalPart";
 import { ControlChatModalPart } from "./components/ControlChatModalPart";
 import { ChatSettingsPart } from "./components/ChatSettingsPart";
 
-export const ChatInfoModal = ({ infoIsOpen, chat }) => {
+export const ChatInfoModal = ({ infoIsOpen, chat, onClose }) => {
   const [activeTab, setActiveTab] = useState("aboutChat");
 
   const renderContent = () => {
@@ -36,7 +36,7 @@ export const ChatInfoModal = ({ infoIsOpen, chat }) => {
         `}
     >
       <div className="w-full h-full flex flex-col items-center gap-2 pt-5">
-        
+        <div className="w-full flex justify-end mr-10 cursor-pointer" onClick={onClose}>X</div>
         {/* Аватарка или первая буква чата */}
         {chat.avatarUrl ? (
           <img

@@ -68,7 +68,7 @@ export const ChatWindow = ({ chat }) => {
           ☰
         </div>
       </header>
-      <ChatInfoModal infoIsOpen={infoIsOpen} chat={chat} />
+      <ChatInfoModal infoIsOpen={infoIsOpen} chat={chat} onClose={() => setInfoIsOpen(false)}/>
       <ChatMessagesWindow/>
     </div>
   );

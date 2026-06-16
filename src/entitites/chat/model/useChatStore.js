@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetchMyChats, getChatDetails, addNewUsersTargetChat2, getChatHistory, sendMessageApi, deleteChatApi, updateChatApi, uploadChatAvatarApi } from "../api/chatApi";
+import { fetchMyChats, getChatDetails, addNewUsersTargetChat2, getChatHistory, sendMessageApi, deleteChatApi, updateChatApi, uploadChatAvatarApi, removeChatMemberApi, updateMemberRoleApi } from "../api/chatApi";
 import {createChat} from '../api/chatApi'
 
 export const useChatStore = create((set, get) => ({
@@ -278,6 +278,70 @@ export const useChatStore = create((set, get) => ({
             chatDetailsCache: { ...s.chatDetailsCache, [chatId]: undefined },
             activeChatDetails: s.activeChatDetails?.id === chatId ? null : s.activeChatDetails,
         }));
+    },
+
+    clearStore: () => set({
+        chats: [],
+        chatDetailsCache: {},
+        activeChat: null,
+        activeChatDetails: null,
+        messages: [],
+    }),
+
+    removeMember: async (chatId, userId) => {
+        try {
+            await removeChatMemberApi(chatId, userId);
+    
+            set((state) => {
+                const updateMembers = (details) => details
+                    ? { ...details, members: details.members.filter((m) => m.userId !== userId) }
+                    : details;
+    
+                return {
+                    activeChatDetails: state.activeChatDetails?.id === chatId
+                        ? updateMembers(state.activeChatDetails)
+                        : state.activeChatDetails,
+                    chatDetailsCache: {
+                        ...state.chatDetailsCache,
+                        [chatId]: updateMembers(state.chatDetailsCache[chatId]),
+                    },
+                    chats: state.chats.map((c) =>
+                        c.id === chatId ? { ...c, memberCount: Math.max((c.memberCount || 1) - 1, 0) } : c
+                    ),
+                };
+            });
+        } catch (err) {
+            throw new Error(err.message || "Не удалось удалить участника");
+        }
+    },
+    
+    updateMemberRole: async (chatId, userId, role) => {
+        try {
+            await updateMemberRoleApi(chatId, userId, role);
+    
+            set((state) => {
+                const updateMembers = (details) => details
+                    ? {
+                        ...details,
+                        members: details.members.map((m) =>
+                            m.userId === userId ? { ...m, role } : m
+                        ),
+                    }
+                    : details;
+    
+                return {
+                    activeChatDetails: state.activeChatDetails?.id === chatId
+                        ? updateMembers(state.activeChatDetails)
+                        : state.activeChatDetails,
+                    chatDetailsCache: {
+                        ...state.chatDetailsCache,
+                        [chatId]: updateMembers(state.chatDetailsCache[chatId]),
+                    },
+                };
+            });
+        } catch (err) {
+            throw new Error(err.message || "Не удалось изменить роль");
+        }
     },
       
 

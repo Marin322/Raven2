@@ -132,7 +132,7 @@ export const ChatMessagesWindow = () => {
     };
 
     return (
-        <div className="w-full h-full flex flex-col">
+        <div className="w-full h-full flex flex-col overflow-hidden">
 
             {/* Кнопка поиска */}
             <div className="flex justify-end px-4 pt-2">
@@ -146,7 +146,7 @@ export const ChatMessagesWindow = () => {
             </div>
 
             {/* Область сообщений */}
-            <div className="w-full flex-1 p-5 gap-3 flex flex-col items-start overflow-auto">
+            <div className="w-full min-h-0 flex-1 p-5 gap-3 flex flex-col items-start overflow-y-auto">
                 {messages.map((msg) => {
                     const isMe = msg.senderId === myId;
                     return (

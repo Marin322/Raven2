@@ -76,3 +76,16 @@ export const getChatAvatarApi = (chatId) => {
         method: "GET" 
     });
 };
+
+export const removeChatMemberApi = async (chatId, userId) => {
+    return apiFetch(`/Chat/${chatId}/members/${userId}`, {
+        method: "DELETE",
+    });
+};
+
+export const updateMemberRoleApi = async (chatId, userId, role) => {
+    return apiFetch(`/Chat/${chatId}/members/${userId}/role`, {
+        method: "PUT",
+        body: JSON.stringify({ role }),
+    });
+};
