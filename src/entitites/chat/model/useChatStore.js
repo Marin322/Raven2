@@ -324,7 +324,7 @@ export const useChatStore = create((set, get) => ({
                     ? {
                         ...details,
                         members: details.members.map((m) =>
-                            m.userId === userId ? { ...m, role } : m
+                            m.userId === userId ? { ...m, role: Number(role) } : m
                         ),
                     }
                     : details;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "../../../../../shared";
 import { useChatStore } from "../../../../../entitites/chat/model/useChatStore";
-import { removeMemberApi, updateMemberRoleApi } from "../../../api/chatApi";
 
 const ROLE_LABELS = {
     0: "Участник",
@@ -20,10 +19,18 @@ const ROLE_OPTIONS = [
 export const ControlChatModalPart = ({ chatId }) => {
     const [selectUsers, setSelectUsers] = useState([]);
     const [status, setStatus] = useState("");
-    const { activeChatDetails, fetchChatDetails, addNewUsersTargetChat, deleteChat, chats } =
-        useChatStore();
+    
+    // Достаем методы удаления и смены роли прямо из нашего Zustand стора!
+    const { 
+        activeChatDetails, 
+        fetchChatDetails, 
+        addNewUsersTargetChat, 
+        deleteChat, 
+        removeMember, 
+        updateMemberRole 
+    } = useChatStore();
 
-    // Все пользователи компании — берём из чатов стора или грузим отдельно
+    // Все пользователи компании
     const [allUsers, setAllUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
 
@@ -32,7 +39,6 @@ export const ControlChatModalPart = ({ chatId }) => {
     }, [chatId]);
 
     useEffect(() => {
-        // Грузим пользователей для добавления
         const load = async () => {
             setLoadingUsers(true);
             try {
@@ -63,11 +69,7 @@ export const ControlChatModalPart = ({ chatId }) => {
         if (!selectUsers.length) return;
         try {
             await addNewUsersTargetChat(selectUsers, chatId);
-            await fetchChatDetails(chatId);
-            // Сбрасываем кэш чтобы детали перезагрузились
-            useChatStore.setState(s => ({
-                chatDetailsCache: { ...s.chatDetailsCache, [chatId]: undefined }
-            }));
+            // Ручной сброс кэша больше не нужен, Zustand сам всё обновит внутри себя
             await fetchChatDetails(chatId);
             setSelectUsers([]);
             setStatus("Участники добавлены");
@@ -79,11 +81,9 @@ export const ControlChatModalPart = ({ chatId }) => {
     const handleRemoveMember = async (userId) => {
         if (!window.confirm("Удалить участника из чата?")) return;
         try {
-            await removeMemberApi(chatId, userId);
-            useChatStore.setState(s => ({
-                chatDetailsCache: { ...s.chatDetailsCache, [chatId]: undefined }
-            }));
-            await fetchChatDetails(chatId);
+            // Вызываем метод из стора. Он сам сделает запрос на бэкенд ravenapp.ru 
+            // и уберет юзера из списка без жесткой перезагрузки
+            await removeMember(chatId, userId);
             setStatus("Участник удалён");
         } catch (err) {
             setStatus(err.message);
@@ -92,11 +92,8 @@ export const ControlChatModalPart = ({ chatId }) => {
 
     const handleRoleChange = async (userId, role) => {
         try {
-            await updateMemberRoleApi(chatId, userId, Number(role));
-            useChatStore.setState(s => ({
-                chatDetailsCache: { ...s.chatDetailsCache, [chatId]: undefined }
-            }));
-            await fetchChatDetails(chatId);
+            // Вызываем метод из стора. Передаем chatId, userId и роль
+            await updateMemberRole(chatId, userId, Number(role));
             setStatus("Роль изменена");
         } catch (err) {
             setStatus(err.message);
@@ -114,7 +111,6 @@ export const ControlChatModalPart = ({ chatId }) => {
 
     return (
         <div className="flex flex-col gap-5">
-
             {/* Текущие участники */}
             <div className="flex flex-col gap-2">
                 <p className="text-sm font-medium text-main-text">Участники чата</p>
@@ -151,7 +147,7 @@ export const ControlChatModalPart = ({ chatId }) => {
                                 {member.role !== 2 && member.role !== "Head" && (
                                     <button
                                         onClick={() => handleRemoveMember(member.userId)}
-                                        className="text-red-400 text-xs hover:text-red-600"
+                                        className="text-red-400 text-xs hover:text-red-600 px-1 font-bold"
                                         title="Удалить из чата"
                                     >
                                         ✕

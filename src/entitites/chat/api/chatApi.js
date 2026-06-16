@@ -78,14 +78,17 @@ export const getChatAvatarApi = (chatId) => {
 };
 
 export const removeChatMemberApi = async (chatId, userId) => {
-    return apiFetch(`/Chat/${chatId}/members/${userId}`, {
+    // Передаем userId и в путь, и явно в query-строку как targetUserId
+    return apiFetch(`/chat/${chatId}/members/${userId}?targetUserId=${userId}`, {
         method: "DELETE",
     });
 };
 
+// Изменить роль участника
 export const updateMemberRoleApi = async (chatId, userId, role) => {
-    return apiFetch(`/Chat/${chatId}/members/${userId}/role`, {
+    // Передаем userId и в путь, и явно в query-строку как targetUserId
+    return apiFetch(`/chat/${chatId}/members/${userId}/role?targetUserId=${userId}`, {
         method: "PUT",
-        body: JSON.stringify({ role }),
+        body: JSON.stringify({ role: Number(role) }), 
     });
 };
